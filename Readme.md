@@ -1,7 +1,7 @@
 # Проект «Киноман» [![Build status][travis-image]][travis-url]
 
 * Студент: [Юлия Калганова](https://up.htmlacademy.ru/ecmascript/13/user/972629).
-* Наставник: [Дмитрий Рябинин](https://htmlacademy.ru/profile/haschish).
+* Наставник: [Дмитрий Рябинин](https://up.htmlacademy.ru/ecmascript/13/user/63289).
 
 ---
 
