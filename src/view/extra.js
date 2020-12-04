@@ -1,11 +1,14 @@
 import {createCardTemplate} from './film-card';
+import {generateFilmCard} from '../mock/film';
 
 const MAX_EXTRAS = 2;
+
+const films = new Array(MAX_EXTRAS).fill().map(generateFilmCard);
 const createExtraList = () => {
   let list = ``;
 
   for (let i = 0; i < MAX_EXTRAS; i++) {
-    list += createCardTemplate();
+    list += createCardTemplate(films[i]);
   }
 
   return list;
