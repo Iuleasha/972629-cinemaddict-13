@@ -1,3 +1,5 @@
+import dayjs from 'dayjs';
+
 export const render = (container, template, place = `beforeend`) => {
   container.insertAdjacentHTML(place, template);
 };
@@ -30,4 +32,8 @@ export const getRandomArrayItem = (array) => {
   const randomIndex = getRandomInteger(0, array.length - 1);
 
   return array[randomIndex];
+};
+
+export const formatDate = (date, format) => {
+  return dayjs(date).format(format);
 };

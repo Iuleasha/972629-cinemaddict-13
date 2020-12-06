@@ -39,7 +39,7 @@ export const generateData = () => {
   const daysGap = getRandomInteger(1, 31);
   const monthGap = getRandomInteger(1, 12);
 
-  return dayjs().set(`year`, yearGap).set(`month`, monthGap).set(`day`, daysGap);
+  return dayjs().set(`year`, yearGap).set(`month`, monthGap).set(`day`, daysGap).toDate();
 };
 
 export const generateCommentBlock = () => {
@@ -47,7 +47,6 @@ export const generateCommentBlock = () => {
     text: generateTextComment(),
     emoji: generateEmojiBlock(),
     author: generateAuthorName(),
-    date: generateData().format(`YYYY/MM/DD HH:mm`),
+    date: generateData(),
   };
 };
-

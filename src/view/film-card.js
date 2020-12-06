@@ -1,3 +1,5 @@
+import {formatDate} from '../utils/utils';
+
 const addActiveClass = (status) => {
   return status ? `film-card__controls-item--active` : ``;
 };
@@ -7,7 +9,7 @@ export const createCardTemplate = (film) => {
           <h3 class="film-card__title">${film.title}</h3>
           <p class="film-card__rating">${film.rating}</p>
           <p class="film-card__info">
-            <span class="film-card__year">${film.releaseDate.format(`YYYY`)}</span>
+            <span class="film-card__year">${formatDate(film.releaseDate, `YYYY`)}</span>
             <span class="film-card__duration">${film.duration}</span>
             <span class="film-card__genre">${film.genres[0]}</span>
           </p>
@@ -21,4 +23,3 @@ export const createCardTemplate = (film) => {
           </div>
         </article>`;
 };
-

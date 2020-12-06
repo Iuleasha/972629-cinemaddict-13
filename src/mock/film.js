@@ -210,6 +210,6 @@ export const filterFilms = () => {
 };
 
 export const sortFilmByData = () => [...currentFilmsArray.filmsArray].sort((a, b) => {
-  return b.releaseDate.toDate() - a.releaseDate.toDate();
+  return b.releaseDate - a.releaseDate;
 });
 export const sortByRating = () => [...currentFilmsArray.filmsArray].sort((a, b) => Number(b.rating) - Number(a.rating));

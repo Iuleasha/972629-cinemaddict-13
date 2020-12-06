@@ -1,3 +1,5 @@
+import {formatDate} from '../utils/utils';
+
 const createGenreItem = (array) => {
   let genres = ``;
   array.forEach((item) => {
@@ -5,6 +7,7 @@ const createGenreItem = (array) => {
   });
   return genres;
 };
+
 const createCommentItem = (array) => {
   let comment = ``;
   array.forEach((item) => {
@@ -16,11 +19,11 @@ const createCommentItem = (array) => {
               <p class="film-details__comment-text">${item.text}</p>
               <p class="film-details__comment-info">
                 <span class="film-details__comment-author">${item.author}</span>
-                <span class="film-details__comment-day">${item.date}</span>
-                <button class="film-details__comment-delete">Delete</button>
-              </p>
-            </div>
-          </li>`;
+                <span class="film-details__comment-day">${formatDate(item.date, `YYYY/MM/DD HH:mm`)}</span>
+                  <button class="film-details__comment-delete">Delete</button>
+                </p>
+              </div>
+            </li>`;
   });
   return comment;
 };
@@ -67,7 +70,7 @@ export const createPopupTemplate = (film) => {
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Release Date</td>
-              <td class="film-details__cell">${film.releaseDate.format(`DD MMMM YYYY`)}</td>
+              <td class="film-details__cell">${formatDate(film.releaseDate, `DD MMMM YYYY`)}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Runtime</td>
