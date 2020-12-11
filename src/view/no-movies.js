@@ -1,19 +1,17 @@
 import {createElement} from '../utils/utils';
 
-const createProfileTemplate = () => {
-  return `<section class="header__profile profile">
-    <p class="profile__rating">Sci-Fighter</p>
-    <img class="profile__avatar" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
+const createNoMoviesTemplate = () => `<section class="films-list">
+      <h2 class="films-list__title">There are no movies in our database</h2>
     </section>`;
-};
 
-export default class Profile {
+
+export default class NoMovies {
   constructor() {
     this._element = null;
   }
 
   getTemplate() {
-    return createProfileTemplate();
+    return createNoMoviesTemplate();
   }
 
   getElement() {

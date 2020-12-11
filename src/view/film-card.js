@@ -1,10 +1,10 @@
-import {formatDate} from '../utils/utils';
+import {createElement, formatDate} from '../utils/utils';
 
 const addActiveClass = (status) => {
   return status ? `film-card__controls-item--active` : ``;
 };
 
-export const createCardTemplate = (film) => {
+const createCardTemplate = (film) => {
   return `<article class="film-card">
           <h3 class="film-card__title">${film.title}</h3>
           <p class="film-card__rating">${film.rating}</p>
@@ -23,3 +23,24 @@ export const createCardTemplate = (film) => {
           </div>
         </article>`;
 };
+
+export default class FilmCard {
+  constructor(film) {
+    this.film = film;
+    this._element = null;
+  }
+  getTemplate() {
+    return createCardTemplate(this.film);
+  }
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

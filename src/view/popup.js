@@ -1,4 +1,4 @@
-import {formatDate} from '../utils/utils';
+import {createElement, formatDate} from '../utils/utils';
 
 const createGenreItem = (array) => {
   let genres = ``;
@@ -28,7 +28,7 @@ const createCommentItem = (array) => {
   return comment;
 };
 
-export const createPopupTemplate = (film) => {
+const createPopupTemplate = (film) => {
 
   return `<section class="film-details">
   <form class="film-details__inner" action="" method="get">
@@ -146,4 +146,25 @@ export const createPopupTemplate = (film) => {
 </section>`;
 };
 
+export default class Popup {
+  constructor(film) {
+    this.film = film;
+    this._element = null;
+  }
 
+  getTemplate() {
+    return createPopupTemplate(this.film);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
