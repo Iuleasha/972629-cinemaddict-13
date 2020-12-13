@@ -1,4 +1,4 @@
-import {createElement, formatDate} from '../utils/utils';
+import {createElement, formatDate, getDuration} from '../utils/utils';
 
 const createGenreItem = (array) => {
   let genres = ``;
@@ -74,7 +74,7 @@ const createPopupTemplate = (film) => {
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Runtime</td>
-              <td class="film-details__cell">${film.duration}</td>
+              <td class="film-details__cell">${getDuration(film.duration)}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Country</td>
@@ -160,6 +160,24 @@ export default class Popup {
     if (!this._element) {
       this._element = createElement(this.getTemplate());
     }
+
+    document.body.classList.toggle(`hide-overflow`);
+
+    const closeBtn = this._element.querySelector(`.film-details__close-btn`);
+    const onEscKeyDown = (evt) => {
+      if (evt.key === `Escape` || evt.key === `Esc`) {
+        evt.preventDefault();
+        this._element.removeEventListener(`keydown`, onEscKeyDown);
+      }
+    };
+
+    document.addEventListener(`keydown`, onEscKeyDown);
+    closeBtn.addEventListener(`click`, (evt) => {
+      evt.preventDefault();
+      document.body.classList.toggle(`hide-overflow`);
+      this._element.remove();
+      this.removeElement();
+    });
 
     return this._element;
   }

@@ -1,8 +1,9 @@
 import FilmCardView from './film-card';
 import {render, RenderPosition} from '../utils/utils';
 import {films} from '../mock/film';
-import {addShowMoreButton} from '../main';
+import ShowMoreBtn from '../view/show-more';
 import NoMovies from './no-movies';
+const showMoreBtn = new ShowMoreBtn();
 
 let startCount = 0;
 export let FILMS_QUANTITY = 5;
@@ -32,7 +33,7 @@ export const renderFilmsList = (clean = true) => {
     startCount = 0;
     FILMS_QUANTITY = 5;
     filmsContainer.innerHTML = ``;
-    addShowMoreButton();
+    showMoreBtn.addShowMoreButton();
   } else {
     startCount += 5;
     FILMS_QUANTITY += 5;

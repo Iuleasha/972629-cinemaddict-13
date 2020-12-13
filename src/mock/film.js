@@ -50,17 +50,7 @@ const generateFilmPoster = () => {
 };
 
 const generateFilmDuration = () => {
-  let duration = ``;
-  const hour = getRandomInteger(0, 3);
-  const minutes = getRandomInteger(0, 59);
-
-  if (hour > 0) {
-    duration += `${hour}h `;
-  }
-
-  duration += `${minutes < 10 ? `0` : ``}${minutes}m`;
-
-  return duration;
+  return {hour: getRandomInteger(0, 3), minutes: getRandomInteger(0, 59)};
 };
 
 const generateGenre = () => {
@@ -163,6 +153,7 @@ const generateDetailsAge = () => {
   ];
   return getRandomArrayItem(ages);
 };
+
 export const generateFilmCard = () => {
   return {
     poster: generateFilmPoster(),

@@ -58,3 +58,14 @@ export const getRandomArrayItem = (array) => {
 export const formatDate = (date, format) => {
   return dayjs(date).format(format);
 };
+
+export const getDuration = (time) => {
+  let duration = ``;
+  if (time.hour > 0) {
+    duration += `${time.hour}h `;
+  }
+
+  duration += `${time.minutes < 10 ? `0` : ``}${time.minutes}m`;
+
+  return duration;
+};
