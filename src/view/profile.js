@@ -1,5 +1,5 @@
 import {createElement} from '../utils/utils';
-import {generateRank} from './rank';
+import {generateRank} from './statistic';
 
 const createProfileTemplate = () => {
   return `<section class="header__profile profile">

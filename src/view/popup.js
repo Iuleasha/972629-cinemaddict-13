@@ -161,13 +161,23 @@ export default class Popup {
       this._element = createElement(this.getTemplate());
     }
 
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+
+  addListener() {
     document.body.classList.toggle(`hide-overflow`);
 
-    const closeBtn = this._element.querySelector(`.film-details__close-btn`);
+    const closeBtn = this.getElement().querySelector(`.film-details__close-btn`);
     const onEscKeyDown = (evt) => {
       if (evt.key === `Escape` || evt.key === `Esc`) {
         evt.preventDefault();
-        this._element.removeEventListener(`keydown`, onEscKeyDown);
+        this.getElement().remove();
+        this.removeElement();
+        document.removeEventListener(`keydown`, onEscKeyDown);
       }
     };
 
@@ -175,14 +185,8 @@ export default class Popup {
     closeBtn.addEventListener(`click`, (evt) => {
       evt.preventDefault();
       document.body.classList.toggle(`hide-overflow`);
-      this._element.remove();
+      this.getElement().remove();
       this.removeElement();
     });
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

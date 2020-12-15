@@ -1,5 +1,5 @@
-import {generateRank} from './rank';
 import {watchlist} from '../mock/film';
+import {createElement} from '../utils/utils';
 
 const topGenre = () => {
   const genres = {};
@@ -26,8 +26,21 @@ const topGenre = () => {
   };
 };
 
+export const generateRank = () => {
+  const rank = watchlist.length;
+  if (rank >= 1 && rank <= 10) {
+    return `novice`;
+  } else if (rank >= 11 && rank <= 20) {
+    return `fan`;
+  } else if
+  (rank >= 21) {
+    return `movie buff`;
+  } else {
+    return ``;
+  }
+};
 
-export const createStatisticTemplate = () => {
+const createStatisticTemplate = () => {
   const stats = topGenre();
 
   return `<section class="statistic">
@@ -76,3 +89,25 @@ export const createStatisticTemplate = () => {
     </div>
   </section>`;
 };
+
+export default class Statistic {
+  constructor() {
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createStatisticTemplate();
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

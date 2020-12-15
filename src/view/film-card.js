@@ -1,6 +1,7 @@
 import {createElement, formatDate, getDuration, render, RenderPosition} from '../utils/utils';
 import PopupView from './popup';
 
+
 const addActiveClass = (status) => {
   return status ? `film-card__controls-item--active` : ``;
 };
@@ -36,6 +37,8 @@ export default class FilmCard {
   }
 
   getElement() {
+    const popupView = new PopupView(this.film);
+
     if (!this._element) {
       this._element = createElement(this.getTemplate());
       this._element.addEventListener(`click`, (evt) => {
@@ -43,7 +46,8 @@ export default class FilmCard {
         const target = evt.target;
 
         if (target.classList.contains(`film-card__title`) || target.classList.contains(`film-card__poster`) || target.classList.contains(`film-card__comments`)) {
-          render(document.body, new PopupView(this.film).getElement(), RenderPosition.BEFOREEND);
+          render(document.body, popupView.getElement(), RenderPosition.BEFOREEND);
+          popupView.addListener();
         }
       });
     }
