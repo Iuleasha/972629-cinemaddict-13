@@ -1,4 +1,4 @@
-import {formatDate} from '../utils/utils';
+import {createElement, formatDate, getDuration} from '../utils/utils';
 
 const createGenreItem = (array) => {
   let genres = ``;
@@ -28,7 +28,7 @@ const createCommentItem = (array) => {
   return comment;
 };
 
-export const createPopupTemplate = (film) => {
+const createPopupTemplate = (film) => {
 
   return `<section class="film-details">
   <form class="film-details__inner" action="" method="get">
@@ -74,7 +74,7 @@ export const createPopupTemplate = (film) => {
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Runtime</td>
-              <td class="film-details__cell">${film.duration}</td>
+              <td class="film-details__cell">${getDuration(film.duration)}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Country</td>
@@ -146,4 +146,47 @@ export const createPopupTemplate = (film) => {
 </section>`;
 };
 
+export default class Popup {
+  constructor(film) {
+    this.film = film;
+    this._element = null;
+  }
 
+  getTemplate() {
+    return createPopupTemplate(this.film);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+
+  addListener() {
+    document.body.classList.toggle(`hide-overflow`);
+
+    const closeBtn = this.getElement().querySelector(`.film-details__close-btn`);
+    const onEscKeyDown = (evt) => {
+      if (evt.key === `Escape` || evt.key === `Esc`) {
+        evt.preventDefault();
+        this.getElement().remove();
+        this.removeElement();
+        document.removeEventListener(`keydown`, onEscKeyDown);
+      }
+    };
+
+    document.addEventListener(`keydown`, onEscKeyDown);
+    closeBtn.addEventListener(`click`, (evt) => {
+      evt.preventDefault();
+      document.body.classList.toggle(`hide-overflow`);
+      this.getElement().remove();
+      this.removeElement();
+    });
+  }
+}

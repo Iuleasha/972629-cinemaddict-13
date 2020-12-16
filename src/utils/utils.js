@@ -1,7 +1,28 @@
 import dayjs from 'dayjs';
 
-export const render = (container, template, place = `beforeend`) => {
+export const RenderPosition = {
+  AFTERBEGIN: `afterbegin`,
+  BEFOREEND: `beforeend`
+};
+
+export const render = (container, element, place) => {
+  switch (place) {
+    case RenderPosition.AFTERBEGIN:
+      container.prepend(element);
+      break;
+    case RenderPosition.BEFOREEND:
+      container.append(element);
+      break;
+  }
+};
+export const renderTemplate = (container, template, place = `beforeend`) => {
   container.insertAdjacentHTML(place, template);
+};
+export const createElement = (template) => {
+  const newElement = document.createElement(`div`);
+  newElement.innerHTML = template;
+
+  return newElement.firstChild;
 };
 
 export const getRandomInteger = (a = 0, b = 1) => {
@@ -36,4 +57,15 @@ export const getRandomArrayItem = (array) => {
 
 export const formatDate = (date, format) => {
   return dayjs(date).format(format);
+};
+
+export const getDuration = (time) => {
+  let duration = ``;
+  if (time.hour > 0) {
+    duration += `${time.hour}h `;
+  }
+
+  duration += `${time.minutes < 10 ? `0` : ``}${time.minutes}m`;
+
+  return duration;
 };

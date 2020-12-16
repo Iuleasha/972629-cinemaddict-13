@@ -1,7 +1,8 @@
 import {renderFilmsList, currentFilmsArray} from './render-films-list';
 import {defaultSort, sortByRating, sortFilmByData} from '../mock/film';
+import {createElement} from '../utils/utils';
 
-export const createSortTemplate = () => {
+const createSortTemplate = () => {
   return `<ul class="sort">
     <li><a href="#" class="sort__button sort__button--active" data-type="default">Sort by default</a></li>
     <li><a href="#" class="sort__button" data-type="byDate">Sort by date</a></li>
@@ -32,3 +33,24 @@ export const addSortEvent = () => {
     });
   });
 };
+export default class Sort {
+  constructor() {
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createSortTemplate();
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

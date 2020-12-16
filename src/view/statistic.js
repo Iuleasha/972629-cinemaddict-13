@@ -1,9 +1,53 @@
-export const createStatisticTemplate = () => {
+import {watchlist} from '../mock/film';
+import {createElement} from '../utils/utils';
+
+const topGenre = () => {
+  const genres = {};
+  let hours = 0;
+  let minutes = 0;
+
+  watchlist.forEach((item) => {
+    hours += item.duration.hour;
+    minutes += item.duration.minutes;
+    item.genres.forEach((genre) => {
+      genres[genre] = (genres[genre] || 0) + 1;
+    });
+  });
+
+  hours += Math.floor(minutes / 60);
+  minutes = minutes % 60;
+  minutes = minutes < 10 ? `0${minutes}` : minutes;
+
+  return {
+    totalDuration: {hours, minutes},
+    topGenre: Object.keys(genres).sort((a, b) =>
+      genres[b] - genres[a]
+    ).find(() => true) || `-`
+  };
+};
+
+export const generateRank = () => {
+  const rank = watchlist.length;
+  if (rank >= 1 && rank <= 10) {
+    return `novice`;
+  } else if (rank >= 11 && rank <= 20) {
+    return `fan`;
+  } else if
+  (rank >= 21) {
+    return `movie buff`;
+  } else {
+    return ``;
+  }
+};
+
+const createStatisticTemplate = () => {
+  const stats = topGenre();
+
   return `<section class="statistic">
     <p class="statistic__rank">
       Your rank
       <img class="statistic__img" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
-      <span class="statistic__rank-label">Sci-Fighter</span>
+      <span class="statistic__rank-label">${generateRank()}</span>
     </p>
 
     <form action="https://echo.htmlacademy.ru/" method="get" class="statistic__filters">
@@ -28,15 +72,15 @@ export const createStatisticTemplate = () => {
     <ul class="statistic__text-list">
       <li class="statistic__text-item">
         <h4 class="statistic__item-title">You watched</h4>
-        <p class="statistic__item-text">22 <span class="statistic__item-description">movies</span></p>
+        <p class="statistic__item-text">${watchlist.length} <span class="statistic__item-description">movies</span></p>
       </li>
       <li class="statistic__text-item">
         <h4 class="statistic__item-title">Total duration</h4>
-        <p class="statistic__item-text">130 <span class="statistic__item-description">h</span> 22 <span class="statistic__item-description">m</span></p>
+        <p class="statistic__item-text">${stats.totalDuration.hours} <span class="statistic__item-description">h</span> ${stats.totalDuration.minutes} <span class="statistic__item-description">m</span></p>
       </li>
       <li class="statistic__text-item">
         <h4 class="statistic__item-title">Top genre</h4>
-        <p class="statistic__item-text">Sci-Fi</p>
+        <p class="statistic__item-text">${stats.topGenre}</p>
       </li>
     </ul>
 
@@ -45,3 +89,25 @@ export const createStatisticTemplate = () => {
     </div>
   </section>`;
 };
+
+export default class Statistic {
+  constructor() {
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createStatisticTemplate();
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

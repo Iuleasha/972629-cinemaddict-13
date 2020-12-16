@@ -1,16 +1,17 @@
 import {createElement} from '../utils/utils';
 
-const createFooterStatsTemplate = () => {
-  return `<p>130 291 movies inside</p>`;
-};
+const createNoMoviesTemplate = () => `<section class="films-list">
+      <h2 class="films-list__title">There are no movies in our database</h2>
+    </section>`;
 
-export default class FooterStats {
+
+export default class NoMovies {
   constructor() {
     this._element = null;
   }
 
   getTemplate() {
-    return createFooterStatsTemplate();
+    return createNoMoviesTemplate();
   }
 
   getElement() {
