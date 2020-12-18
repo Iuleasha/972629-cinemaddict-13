@@ -6,7 +6,7 @@ import StatisticView from './view/statistic';
 import FilmsContainerView from './view/film-container';
 import FilmCardExtrasView from './view/extra';
 import FooterStatsView from './view/footer-stats';
-import {render, RenderPosition} from './utils/utils';
+import {render, RenderPosition} from './utils/render';
 import {filterFilms} from './mock/film';
 
 filterFilms();
@@ -25,7 +25,10 @@ addFilterEvent();
 addSortEvent();
 renderFilmsList();
 
-render(filmsElement(), new FilmCardExtrasView(`Top rated`).getElement(), RenderPosition.BEFOREEND);
-render(filmsElement(), new FilmCardExtrasView(`Most commented`).getElement(), RenderPosition.BEFOREEND);
+[`Top rated`, `Most commented`].forEach((item)=>{
+  const extraItem = new FilmCardExtrasView(item);
+  render(filmsElement(), extraItem.getElement(), RenderPosition.BEFOREEND);
+  extraItem.getExtraList();
+});
 
 render(footerElement(), new FooterStatsView().getElement(), RenderPosition.BEFOREEND);

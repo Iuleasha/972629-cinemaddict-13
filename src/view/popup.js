@@ -1,4 +1,6 @@
-import {createElement, formatDate, getDuration} from '../utils/utils';
+import {formatDate, getDuration} from '../utils/utils';
+import AbstractView from './abstract';
+import {render, RenderPosition} from '../utils/render';
 
 const createGenreItem = (array) => {
   let genres = ``;
@@ -146,47 +148,45 @@ const createPopupTemplate = (film) => {
 </section>`;
 };
 
-export default class Popup {
+export default class Popup extends AbstractView {
   constructor(film) {
+    super();
     this.film = film;
-    this._element = null;
   }
 
   getTemplate() {
     return createPopupTemplate(this.film);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
-  }
-
   addListener() {
-    document.body.classList.toggle(`hide-overflow`);
-
     const closeBtn = this.getElement().querySelector(`.film-details__close-btn`);
+
     const onEscKeyDown = (evt) => {
       if (evt.key === `Escape` || evt.key === `Esc`) {
         evt.preventDefault();
-        this.getElement().remove();
-        this.removeElement();
+        this.closePopup();
         document.removeEventListener(`keydown`, onEscKeyDown);
       }
     };
 
     document.addEventListener(`keydown`, onEscKeyDown);
+
     closeBtn.addEventListener(`click`, (evt) => {
       evt.preventDefault();
-      document.body.classList.toggle(`hide-overflow`);
-      this.getElement().remove();
-      this.removeElement();
+      this.closePopup();
+      document.removeEventListener(`keydown`, onEscKeyDown);
     });
+  }
+
+  showPopup() {
+    document.body.classList.toggle(`hide-overflow`);
+    this.addListener();
+    render(document.body, this.getElement(), RenderPosition.BEFOREEND);
+  }
+
+  closePopup() {
+    document.body.classList.toggle(`hide-overflow`);
+    this._element.remove();
+    this.removeElement();
   }
 }

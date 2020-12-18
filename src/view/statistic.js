@@ -1,5 +1,5 @@
 import {watchlist} from '../mock/film';
-import {createElement} from '../utils/utils';
+import AbstractView from './abstract';
 
 const topGenre = () => {
   const genres = {};
@@ -90,24 +90,8 @@ const createStatisticTemplate = () => {
   </section>`;
 };
 
-export default class Statistic {
-  constructor() {
-    this._element = null;
-  }
-
+export default class Statistic extends AbstractView {
   getTemplate() {
     return createStatisticTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

@@ -1,45 +1,41 @@
 import {generateFilmCard} from '../mock/film';
-import FilmCard from './film-card';
-import {createElement} from '../utils/utils';
+import FilmCardView from './film-card';
+import {render, RenderPosition} from '../utils/render';
+import PopupView from './popup';
+import AbstractView from './abstract';
 
 const MAX_EXTRAS = 2;
-
-const films = new Array(MAX_EXTRAS).fill().map(generateFilmCard);
-const createExtraList = () => {
-  let list = ``;
-
-  for (let i = 0; i < MAX_EXTRAS; i++) {
-    list += new FilmCard(films[i]).getTemplate();
-  }
-  return list;
-};
 
 const createExtraTemplate = (title) => {
   return `<section class="films-list films-list--extra">
       <h2 class="films-list__title">${title}</h2>
-      <div class="films-list__container">${createExtraList()}</div>
+      <div class="films-list__container"></div>
     </section>`;
 };
 
-export default class FilmCardExtras {
+export default class FilmCardExtras extends AbstractView {
   constructor(title) {
+    super();
     this.title = title;
-    this._element = null;
   }
 
   getTemplate() {
     return createExtraTemplate(this.title);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
+  getExtraList() {
+    const films = new Array(MAX_EXTRAS).fill().map(generateFilmCard);
+    const filmContainer = this.getElement().querySelector(`.films-list__container`);
+
+    for (let i = 0; i < MAX_EXTRAS; i++) {
+      const filmCard = new FilmCardView(films[i]);
+
+      filmCard.setClickHandler(() => {
+        const popupView = new PopupView(films[i]);
+        popupView.showPopup();
+      });
+
+      render(filmContainer, filmCard.getElement(), RenderPosition.BEFOREEND);
     }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

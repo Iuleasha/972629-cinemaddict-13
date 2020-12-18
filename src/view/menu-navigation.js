@@ -1,6 +1,6 @@
 import {asWatched, favorites, films, watchlist} from '../mock/film';
 import {currentFilmsArray, renderFilmsList} from './render-films-list';
-import {createElement} from '../utils/utils';
+import AbstractView from './abstract';
 
 const createMenuTemplate = () => {
   return `<nav class="main-navigation">
@@ -40,24 +40,9 @@ const selectArray = (type) => {
   }
 };
 
-export default class Navigation {
-  constructor() {
-    this._element = null;
-  }
+export default class Navigation extends AbstractView {
 
   getTemplate() {
     return createMenuTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

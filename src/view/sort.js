@@ -1,6 +1,6 @@
-import {renderFilmsList, currentFilmsArray} from './render-films-list';
+import {currentFilmsArray, renderFilmsList} from './render-films-list';
 import {defaultSort, sortByRating, sortFilmByData} from '../mock/film';
-import {createElement} from '../utils/utils';
+import AbstractView from './abstract';
 
 const createSortTemplate = () => {
   return `<ul class="sort">
@@ -33,24 +33,8 @@ export const addSortEvent = () => {
     });
   });
 };
-export default class Sort {
-  constructor() {
-    this._element = null;
-  }
-
+export default class Sort extends AbstractView {
   getTemplate() {
     return createSortTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
