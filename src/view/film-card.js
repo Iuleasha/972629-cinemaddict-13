@@ -1,6 +1,5 @@
-import {createElement, formatDate, getDuration, render, RenderPosition} from '../utils/utils';
-import PopupView from './popup';
-
+import {formatDate, getDuration} from '../utils/common';
+import Abstract from './abstract';
 
 const addActiveClass = (status) => {
   return status ? `film-card__controls-item--active` : ``;
@@ -26,36 +25,30 @@ const createCardTemplate = (film) => {
         </article>`;
 };
 
-export default class FilmCard {
+export default class FilmCard extends Abstract {
   constructor(film) {
+    super();
+
     this.film = film;
-    this._element = null;
+    this._clickHandler = this._clickHandler.bind(this);
   }
 
   getTemplate() {
     return createCardTemplate(this.film);
   }
 
-  getElement() {
-    const popupView = new PopupView(this.film);
-
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-      this._element.addEventListener(`click`, (evt) => {
-        evt.preventDefault();
-        const target = evt.target;
-
-        if (target.classList.contains(`film-card__title`) || target.classList.contains(`film-card__poster`) || target.classList.contains(`film-card__comments`)) {
-          render(document.body, popupView.getElement(), RenderPosition.BEFOREEND);
-          popupView.addListener();
-        }
-      });
-    }
-
-    return this._element;
+  _clickHandler(evt) {
+    evt.preventDefault();
+    this._callback.click();
   }
 
-  removeElement() {
-    this._element = null;
+  setClickHandler(callback) {
+    this._callback.click = callback;
+    const moviePoster = this.getElement().querySelector(`.film-card__poster`);
+    const movieTitle = this.getElement().querySelector(`.film-card__title`);
+    const movieComments = this.getElement().querySelector(`.film-card__comments`);
+    const items = [moviePoster, movieTitle, movieComments];
+
+    items.forEach((item) => item.addEventListener(`click`, this._clickHandler));
   }
 }

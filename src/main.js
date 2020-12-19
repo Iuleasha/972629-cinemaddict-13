@@ -6,7 +6,7 @@ import StatisticView from './view/statistic';
 import FilmsContainerView from './view/film-container';
 import FilmCardExtrasView from './view/extra';
 import FooterStatsView from './view/footer-stats';
-import {render, RenderPosition} from './utils/utils';
+import {render, RenderPosition} from './utils/render';
 import {filterFilms} from './mock/film';
 
 filterFilms();
@@ -16,16 +16,19 @@ const mainElement = () => document.querySelector(`.main`);
 const filmsElement = () => mainElement().querySelector(`.films`);
 const footerElement = () => document.querySelector(`.footer__statistics`);
 
-render(headerElement(), new ProfileView().getElement(), RenderPosition.BEFOREEND);
-render(mainElement(), new NavigationView().getElement(), RenderPosition.BEFOREEND);
-render(mainElement(), new SortView().getElement(), RenderPosition.BEFOREEND);
-render(mainElement(), new StatisticView().getElement(), RenderPosition.BEFOREEND);
-render(mainElement(), new FilmsContainerView().getElement(), RenderPosition.BEFOREEND);
+render(headerElement(), new ProfileView(), RenderPosition.BEFOREEND);
+render(mainElement(), new NavigationView(), RenderPosition.BEFOREEND);
+render(mainElement(), new SortView(), RenderPosition.BEFOREEND);
+render(mainElement(), new StatisticView(), RenderPosition.BEFOREEND);
+render(mainElement(), new FilmsContainerView(), RenderPosition.BEFOREEND);
 addFilterEvent();
 addSortEvent();
 renderFilmsList();
 
-render(filmsElement(), new FilmCardExtrasView(`Top rated`).getElement(), RenderPosition.BEFOREEND);
-render(filmsElement(), new FilmCardExtrasView(`Most commented`).getElement(), RenderPosition.BEFOREEND);
+[`Top rated`, `Most commented`].forEach((item)=>{
+  const extraItem = new FilmCardExtrasView(item);
+  render(filmsElement(), extraItem, RenderPosition.BEFOREEND);
+  extraItem.getExtraList();
+});
 
-render(footerElement(), new FooterStatsView().getElement(), RenderPosition.BEFOREEND);
+render(footerElement(), new FooterStatsView(), RenderPosition.BEFOREEND);

@@ -1,4 +1,4 @@
-import {createEmptyArray, createRandomArray, getRandomArrayItem, getRandomInteger, randomNumber} from '../utils/utils';
+import {createEmptyArray, createRandomArray, getRandomArrayItem, getRandomInteger, randomNumber} from '../utils/common';
 import {generateCommentBlock, generateData} from './comment-mock';
 import {currentFilmsArray} from '../view/render-films-list';
 

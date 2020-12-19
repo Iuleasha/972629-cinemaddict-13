@@ -1,47 +1,39 @@
-import {createElement, render, RenderPosition} from '../utils/utils';
+import {remove, render, RenderPosition} from '../utils/render';
 import {currentFilmsArray, FILMS_QUANTITY, renderFilmsList} from './render-films-list';
+import AbstractView from './abstract';
 
 const createShowMoreBtnTemplate = () => {
   return `<button class="films-list__show-more">Show more</button>`;
 };
 
-export default class ShowMoreBtn {
+export default class ShowMoreBtn extends AbstractView {
   constructor() {
-    this._element = null;
+    super();
   }
 
   getTemplate() {
     return createShowMoreBtnTemplate();
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
-  }
-
-  addShowMoreButton() {
+  addShowMoreButton(filmsListElement) {
     if (currentFilmsArray.filmsArray.length > FILMS_QUANTITY) {
-      const filmsListElement = document.querySelector(`.films-list`);
+      const showMoreBtn = this.getElement();
 
-      render(filmsListElement, this.getElement(), RenderPosition.BEFOREEND);
-      this._element.addEventListener(`click`, (evt) => {
+      showMoreBtn.addEventListener(`click`, (evt) => {
         evt.preventDefault();
         renderFilmsList(false);
-        if (currentFilmsArray.filmsArray.length <= FILMS_QUANTITY && this._element) {
-          this._element.remove();
-          this.removeElement();
-        }
+        this.removeShowMore();
       });
-    } else if (currentFilmsArray.filmsArray.length <= FILMS_QUANTITY && this._element) {
-      this._element.remove();
-      this.removeElement();
+
+      render(filmsListElement, showMoreBtn, RenderPosition.BEFOREEND);
+    } else {
+      this.removeShowMore();
+    }
+  }
+
+  removeShowMore() {
+    if (currentFilmsArray.filmsArray.length <= FILMS_QUANTITY && this._element) {
+      remove(this);
     }
   }
 }
