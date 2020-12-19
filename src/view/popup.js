@@ -1,4 +1,4 @@
-import {formatDate, getDuration} from '../utils/utils';
+import {formatDate, getDuration} from '../utils/common';
 import AbstractView from './abstract';
 import {render, RenderPosition} from '../utils/render';
 

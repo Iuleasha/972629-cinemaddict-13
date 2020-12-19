@@ -1,4 +1,4 @@
-import {render, RenderPosition} from '../utils/render';
+import {remove, render, RenderPosition} from '../utils/render';
 import {currentFilmsArray, FILMS_QUANTITY, renderFilmsList} from './render-films-list';
 import AbstractView from './abstract';
 
@@ -33,8 +33,7 @@ export default class ShowMoreBtn extends AbstractView {
 
   removeShowMore() {
     if (currentFilmsArray.filmsArray.length <= FILMS_QUANTITY && this._element) {
-      this._element.remove();
-      this.removeElement();
+      remove(this);
     }
   }
 }

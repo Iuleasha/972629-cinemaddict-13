@@ -27,8 +27,10 @@ export const renderFilmsList = (clean = true) => {
   const currentLength = currentFilmsArray.filmsArray.length;
 
   if (!currentFilmsArray.filmsArray.length) {
+    const noMovies = new NoMovies();
     filmsContainer.innerHTML = ``;
-    render(filmsListElement, new NoMovies().getElement(), RenderPosition.AFTERBEGIN);
+
+    render(filmsListElement, noMovies, RenderPosition.AFTERBEGIN);
 
     return;
   }
@@ -53,7 +55,7 @@ export const renderFilmsList = (clean = true) => {
       popupView.showPopup();
     });
 
-    render(filmsContainer, filmCard.getElement(), RenderPosition.BEFOREEND);
+    render(filmsContainer, filmCard, RenderPosition.BEFOREEND);
   }
 };
 

@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import {getRandomArrayItem, getRandomInteger} from '../utils/utils';
+import {getRandomArrayItem, getRandomInteger} from '../utils/common';
 
 const generateTextComment = () => {
   const comments = [

@@ -16,6 +16,7 @@ const createExtraTemplate = (title) => {
 export default class FilmCardExtras extends AbstractView {
   constructor(title) {
     super();
+
     this.title = title;
   }
 
@@ -35,7 +36,7 @@ export default class FilmCardExtras extends AbstractView {
         popupView.showPopup();
       });
 
-      render(filmContainer, filmCard.getElement(), RenderPosition.BEFOREEND);
+      render(filmContainer, filmCard, RenderPosition.BEFOREEND);
     }
   }
 }

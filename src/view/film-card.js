@@ -1,4 +1,4 @@
-import {formatDate, getDuration} from '../utils/utils';
+import {formatDate, getDuration} from '../utils/common';
 import Abstract from './abstract';
 
 const addActiveClass = (status) => {
