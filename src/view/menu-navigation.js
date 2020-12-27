@@ -41,7 +41,6 @@ const selectArray = (type) => {
 };
 
 export default class Navigation extends AbstractView {
-
   getTemplate() {
     return createMenuTemplate();
   }

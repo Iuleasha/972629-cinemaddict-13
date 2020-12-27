@@ -33,6 +33,7 @@ export const addSortEvent = () => {
     });
   });
 };
+
 export default class Sort extends AbstractView {
   getTemplate() {
     return createSortTemplate();

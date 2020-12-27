@@ -154,8 +154,9 @@ const generateDetailsAge = () => {
   return getRandomArrayItem(ages);
 };
 
-export const generateFilmCard = () => {
+export const generateFilmCard = (index) => {
   return {
+    id: index,
     poster: generateFilmPoster(),
     title: generateFilmTitle(),
     rating: randomNumber(1, 10).toFixed(1),
@@ -178,7 +179,7 @@ export const generateFilmCard = () => {
 };
 const FILMS_COUNT = 20;
 
-export const films = new Array(getRandomInteger(0, FILMS_COUNT)).fill().map(generateFilmCard);
+export const films = new Array(getRandomInteger(0, FILMS_COUNT)).fill().map((item, index) => generateFilmCard(index));
 export const watchlist = [];
 export const asWatched = [];
 export const favorites = [];
