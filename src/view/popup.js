@@ -1,6 +1,5 @@
 import {formatDate, getDuration} from '../utils/common';
 import AbstractView from './abstract';
-import {render, RenderPosition} from '../utils/render';
 import {filmControlHandler} from "../handlers/film-controls";
 
 const createGenreItem = (array) => {
