@@ -1,6 +1,7 @@
 import {formatDate, getDuration} from '../utils/common';
 import AbstractView from './abstract';
 import {render, RenderPosition} from '../utils/render';
+import {filmControlHandler} from "../handlers/film-controls";
 
 const createGenreItem = (array) => {
   let genres = ``;
@@ -31,7 +32,6 @@ const createCommentItem = (array) => {
 };
 
 const createPopupTemplate = (film) => {
-
   return `<section class="film-details">
   <form class="film-details__inner" action="" method="get">
     <div class="film-details__top-container">
@@ -94,13 +94,13 @@ const createPopupTemplate = (film) => {
       </div>
 
       <section class="film-details__controls">
-        <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist" ${film.controls.addToWatchlist ? `checked` : ``}>
+        <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist" ${film.controls.watchlist ? `checked` : ``}>
         <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist">Add to watchlist</label>
 
-        <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" ${film.controls.markAsWatched ? `checked` : ``}>
+        <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" ${film.controls.watched ? `checked` : ``}>
         <label for="watched" class="film-details__control-label film-details__control-label--watched">Already watched</label>
 
-        <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" ${film.controls.markAsFavorite ? `checked` : ``}>
+        <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" ${film.controls.favorite ? `checked` : ``}>
         <label for="favorite" class="film-details__control-label film-details__control-label--favorite">Add to favorites</label>
       </section>
     </div>
@@ -151,6 +151,7 @@ const createPopupTemplate = (film) => {
 export default class Popup extends AbstractView {
   constructor(film) {
     super();
+
     this.film = film;
   }
 
@@ -158,35 +159,24 @@ export default class Popup extends AbstractView {
     return createPopupTemplate(this.film);
   }
 
-  addListener() {
-    const closeBtn = this.getElement().querySelector(`.film-details__close-btn`);
+  setControlsHandler() {
+    const controls = this.getElement().querySelectorAll(`.film-details__control-input`);
 
-    const onEscKeyDown = (evt) => {
-      if (evt.key === `Escape` || evt.key === `Esc`) {
-        evt.preventDefault();
-        this.closePopup();
-        document.removeEventListener(`keydown`, onEscKeyDown);
-      }
-    };
+    controls.forEach((item) => {
+      const type = item.name;
 
-    document.addEventListener(`keydown`, onEscKeyDown);
+      item.addEventListener(`change`, () => {
+        const filmCardControl = document.querySelector(`.film-card[data-id="${this.film.id}"] [data-type=${type}]`);
+        this.film.controls[type] = item.checked;
 
-    closeBtn.addEventListener(`click`, (evt) => {
-      evt.preventDefault();
-      this.closePopup();
-      document.removeEventListener(`keydown`, onEscKeyDown);
+        filmCardControl.classList.toggle(`film-card__controls-item--active`);
+        filmControlHandler(this.film, type);
+      });
     });
   }
 
-  showPopup() {
-    document.body.classList.toggle(`hide-overflow`);
-    this.addListener();
-    render(document.body, this.getElement(), RenderPosition.BEFOREEND);
-  }
-
-  closePopup() {
-    document.body.classList.toggle(`hide-overflow`);
-    this._element.remove();
-    this.removeElement();
+  setCloseClickHandler(callback) {
+    this._callback.closeClick = callback;
+    this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, this._callback.closeClick);
   }
 }

@@ -1,7 +1,6 @@
-import {generateFilmCard} from '../mock/film';
 import FilmCardView from './film-card';
 import {render, RenderPosition} from '../utils/render';
-import PopupView from './popup';
+import Popup from '../presenter/popup';
 import AbstractView from './abstract';
 
 const MAX_EXTRAS = 2;
@@ -17,6 +16,7 @@ export default class FilmCardExtras extends AbstractView {
   constructor(title) {
     super();
 
+    this._popup = new Popup();
     this.title = title;
   }
 
@@ -24,19 +24,17 @@ export default class FilmCardExtras extends AbstractView {
     return createExtraTemplate(this.title);
   }
 
-  getExtraList() {
-    const films = new Array(MAX_EXTRAS).fill().map(generateFilmCard);
+  getExtraList(array) {
     const filmContainer = this.getElement().querySelector(`.films-list__container`);
 
-    for (let i = 0; i < MAX_EXTRAS; i++) {
-      const filmCard = new FilmCardView(films[i]);
+    array.slice(0, MAX_EXTRAS).forEach((item) => {
+      const filmCard = new FilmCardView(item);
 
       filmCard.setClickHandler(() => {
-        const popupView = new PopupView(films[i]);
-        popupView.showPopup();
+        this._popup.init(item);
       });
 
       render(filmContainer, filmCard, RenderPosition.BEFOREEND);
-    }
+    });
   }
 }

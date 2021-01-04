@@ -3,7 +3,7 @@ import {render, RenderPosition} from '../utils/render';
 import {films} from '../mock/film';
 import ShowMoreBtn from '../view/show-more';
 import NoMovies from './no-movies';
-import PopupView from './popup';
+import Popup from '../presenter/popup';
 
 const showMoreBtn = new ShowMoreBtn();
 
@@ -45,15 +45,17 @@ export const renderFilmsList = (clean = true) => {
     FILMS_QUANTITY += 5;
   }
 
+  const popup = new Popup();
   const LENGTH = currentLength < FILMS_QUANTITY ? currentLength : FILMS_QUANTITY;
 
   for (let i = startCount; i < LENGTH; i++) {
     const filmCard = new FilmCardView(currentFilmsArray.filmsArray[i]);
 
     filmCard.setClickHandler(() => {
-      const popupView = new PopupView(currentFilmsArray.filmsArray[i]);
-      popupView.showPopup();
+      popup.init(currentFilmsArray.filmsArray[i]);
     });
+
+    filmCard.setControlsHandler();
 
     render(filmsContainer, filmCard, RenderPosition.BEFOREEND);
   }

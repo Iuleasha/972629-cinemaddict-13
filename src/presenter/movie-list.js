@@ -4,7 +4,10 @@ import FilmsContainerView from "../view/film-container";
 import NavigationView, {addFilterEvent} from "../view/menu-navigation";
 import SortView, {addSortEvent} from "../view/sort";
 import FilmCardExtrasView from "../view/extra";
-import {films, filterFilms} from '../mock/film';
+import {filterFilms, sortByComments, sortByRating} from '../mock/film';
+
+const topRated = `Top rated`;
+const mostCommented = `Most commented`;
 
 export class MovieList {
   constructor(movieListContainer) {
@@ -23,12 +26,12 @@ export class MovieList {
   }
 
   _renderExtras() {
-    [`Top rated`, `Most commented`].forEach((item) => {
+    [topRated, mostCommented].forEach((item) => {
       const extraItem = new FilmCardExtrasView(item);
 
       render(this._filmsContainerView, extraItem, RenderPosition.BEFOREEND);
 
-      extraItem.getExtraList();
+      extraItem.getExtraList(item === topRated ? sortByRating() : sortByComments());
     });
   }
 

@@ -166,9 +166,9 @@ export const generateFilmCard = (index) => {
     description: generateDescriptionFilm(),
     comments: generateCommentsArray(),
     controls: {
-      addToWatchlist: !!getRandomInteger(0, 1),
-      markAsWatched: !!getRandomInteger(0, 1),
-      markAsFavorite: !!getRandomInteger(0, 1),
+      watchlist: !!getRandomInteger(0, 1),
+      watched: !!getRandomInteger(0, 1),
+      favorite: !!getRandomInteger(0, 1),
     },
     director: generateDirectorArray(),
     writers: generateWritersArray(),
@@ -181,27 +181,41 @@ const FILMS_COUNT = 20;
 
 export const films = new Array(getRandomInteger(0, FILMS_COUNT)).fill().map((item, index) => generateFilmCard(index));
 export const watchlist = [];
-export const asWatched = [];
-export const favorites = [];
+export const watched = [];
+export const favorite = [];
 export let defaultSort = [];
 
 export const filterFilms = () => {
   films.forEach((item) => {
     const {controls} = item;
 
-    if (controls.addToWatchlist) {
+    if (controls.watchlist) {
       watchlist.push(item);
     }
-    if (controls.markAsWatched) {
-      asWatched.push(item);
+    if (controls.watched) {
+      watched.push(item);
     }
-    if (controls.markAsFavorite) {
-      favorites.push(item);
+    if (controls.favorite) {
+      favorite.push(item);
     }
   });
+};
+
+export const selectArray = (type) => {
+  switch (type) {
+    case `watchlist`:
+      return watchlist;
+    case `watched`:
+      return watched;
+    case `favorite`:
+      return favorite;
+    default:
+      return films;
+  }
 };
 
 export const sortFilmByData = () => [...currentFilmsArray.filmsArray].sort((a, b) => {
   return b.releaseDate - a.releaseDate;
 });
 export const sortByRating = () => [...currentFilmsArray.filmsArray].sort((a, b) => Number(b.rating) - Number(a.rating));
+export const sortByComments = () => [...currentFilmsArray.filmsArray].sort((a, b) => b.comments.length - a.comments.length);
