@@ -1,6 +1,5 @@
 import {createEmptyArray, createRandomArray, getRandomArrayItem, getRandomInteger, randomNumber} from '../utils/common';
 import {generateCommentBlock, generateData} from './comment-mock';
-import {currentFilmsArray} from '../view/render-films-list';
 
 const generateDescriptionFilm = () => {
   const description = [
@@ -213,9 +212,3 @@ export const selectArray = (type) => {
       return films;
   }
 };
-
-export const sortFilmByData = () => [...currentFilmsArray.filmsArray].sort((a, b) => {
-  return b.releaseDate - a.releaseDate;
-});
-export const sortByRating = () => [...currentFilmsArray.filmsArray].sort((a, b) => Number(b.rating) - Number(a.rating));
-export const sortByComments = () => [...currentFilmsArray.filmsArray].sort((a, b) => b.comments.length - a.comments.length);

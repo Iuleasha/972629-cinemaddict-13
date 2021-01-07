@@ -11,7 +11,7 @@ export default class Popup {
 
   init(movieInfo) {
     if (this._popupComponent !== null) {
-      return;
+      this.destroy();
     }
 
     this._popupComponent = new PopupView(movieInfo);

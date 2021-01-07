@@ -1,0 +1,6 @@
+export const SortType = {
+  DEFAULT: `default`,
+  BY_DATE: `by-date`,
+  BY_RATING: `by-rating`,
+  BY_COMMENTS: `by-comments`,
+};
