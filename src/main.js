@@ -4,7 +4,6 @@ import ProfileView from './view/profile';
 import StatisticView from './view/statistic';
 import FooterStatsView from './view/footer-stats';
 import {render, RenderPosition} from './utils/render';
-import NavigationView from "./view/menu-navigation";
 
 const headerElement = document.querySelector(`.header`);
 const mainElement = document.querySelector(`.main`);
@@ -16,6 +15,3 @@ render(footerElement, new FooterStatsView(), RenderPosition.BEFOREEND);
 
 const movieListPresenter = new MovieList(mainElement);
 movieListPresenter.init(films);
-
-render(mainElement, new NavigationView(), RenderPosition.AFTERBEGIN);
-

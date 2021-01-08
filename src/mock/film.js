@@ -164,11 +164,9 @@ export const generateFilmCard = (index) => {
     country: generateCountry(),
     description: generateDescriptionFilm(),
     comments: generateCommentsArray(),
-    controls: {
-      watchlist: !!getRandomInteger(0, 1),
-      watched: !!getRandomInteger(0, 1),
-      favorite: !!getRandomInteger(0, 1),
-    },
+    watchlist: !!getRandomInteger(0, 1),
+    watched: !!getRandomInteger(0, 1),
+    favorite: !!getRandomInteger(0, 1),
     director: generateDirectorArray(),
     writers: generateWritersArray(),
     actors: generateActorsArray(),
@@ -186,15 +184,13 @@ export let defaultSort = [];
 
 export const filterFilms = () => {
   films.forEach((item) => {
-    const {controls} = item;
-
-    if (controls.watchlist) {
+    if (item.watchlist) {
       watchlist.push(item);
     }
-    if (controls.watched) {
+    if (item.watched) {
       watched.push(item);
     }
-    if (controls.favorite) {
+    if (item.favorite) {
       favorite.push(item);
     }
   });
