@@ -1,6 +1,5 @@
 import {createEmptyArray, createRandomArray, getRandomArrayItem, getRandomInteger, randomNumber} from '../utils/common';
 import {generateCommentBlock, generateData} from './comment-mock';
-import {currentFilmsArray} from '../view/render-films-list';
 
 const generateDescriptionFilm = () => {
   const description = [
@@ -154,8 +153,9 @@ const generateDetailsAge = () => {
   return getRandomArrayItem(ages);
 };
 
-export const generateFilmCard = () => {
+export const generateFilmCard = (index) => {
   return {
+    id: index,
     poster: generateFilmPoster(),
     title: generateFilmTitle(),
     rating: randomNumber(1, 10).toFixed(1),
@@ -164,11 +164,9 @@ export const generateFilmCard = () => {
     country: generateCountry(),
     description: generateDescriptionFilm(),
     comments: generateCommentsArray(),
-    controls: {
-      addToWatchlist: !!getRandomInteger(0, 1),
-      markAsWatched: !!getRandomInteger(0, 1),
-      markAsFavorite: !!getRandomInteger(0, 1),
-    },
+    watchlist: !!getRandomInteger(0, 1),
+    watched: !!getRandomInteger(0, 1),
+    favorite: !!getRandomInteger(0, 1),
     director: generateDirectorArray(),
     writers: generateWritersArray(),
     actors: generateActorsArray(),
@@ -178,29 +176,35 @@ export const generateFilmCard = () => {
 };
 const FILMS_COUNT = 20;
 
-export const films = new Array(getRandomInteger(0, FILMS_COUNT)).fill().map(generateFilmCard);
+export const films = new Array(getRandomInteger(0, FILMS_COUNT)).fill().map((item, index) => generateFilmCard(index));
 export const watchlist = [];
-export const asWatched = [];
-export const favorites = [];
+export const watched = [];
+export const favorite = [];
 export let defaultSort = [];
 
 export const filterFilms = () => {
   films.forEach((item) => {
-    const {controls} = item;
-
-    if (controls.addToWatchlist) {
+    if (item.watchlist) {
       watchlist.push(item);
     }
-    if (controls.markAsWatched) {
-      asWatched.push(item);
+    if (item.watched) {
+      watched.push(item);
     }
-    if (controls.markAsFavorite) {
-      favorites.push(item);
+    if (item.favorite) {
+      favorite.push(item);
     }
   });
 };
 
-export const sortFilmByData = () => [...currentFilmsArray.filmsArray].sort((a, b) => {
-  return b.releaseDate - a.releaseDate;
-});
-export const sortByRating = () => [...currentFilmsArray.filmsArray].sort((a, b) => Number(b.rating) - Number(a.rating));
+export const selectArray = (type) => {
+  switch (type) {
+    case `watchlist`:
+      return watchlist;
+    case `watched`:
+      return watched;
+    case `favorite`:
+      return favorite;
+    default:
+      return films;
+  }
+};
