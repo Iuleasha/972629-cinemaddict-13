@@ -90,7 +90,7 @@ const generateGenres = () => {
 const generateCommentsArray = () => {
   const commentsArrayLength = getRandomInteger(0, 5);
 
-  return commentsArrayLength !== 0 ? Array(commentsArrayLength).fill().map(generateCommentBlock) : [];
+  return commentsArrayLength !== 0 ? Array(commentsArrayLength).fill().map((item, index) => generateCommentBlock(index)) : [];
 };
 
 const generateDirectorArray = () => {

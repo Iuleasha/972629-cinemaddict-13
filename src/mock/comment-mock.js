@@ -12,26 +12,17 @@ const generateTextComment = () => {
   return getRandomArrayItem(comments);
 };
 
-const generateEmojiBlock = () => {
-  const emoji = [
-    `smile.png`,
-    `sleeping.png`,
-    `puke.png`,
-    `angry.png`
-  ];
-
-  return `./images/emoji/${getRandomArrayItem(emoji)}`;
-};
-
 const generateAuthorName = () => {
   const authors = [
     `Андрей К.`,
     `Юлия М.`,
-    `Сергей В.`
+    `Сергей В.`,
   ];
 
   return getRandomArrayItem(authors);
 };
+
+export const emotion = [`smile`, `sleeping`, `puke`, `angry`];
 
 export const generateData = () => {
   const maxYearsGap = 2010;
@@ -42,10 +33,11 @@ export const generateData = () => {
   return dayjs().set(`year`, yearGap).set(`month`, monthGap).set(`day`, daysGap).toDate();
 };
 
-export const generateCommentBlock = () => {
+export const generateCommentBlock = (index) => {
   return {
-    text: generateTextComment(),
-    emoji: generateEmojiBlock(),
+    id: index,
+    comment: generateTextComment(),
+    emotion: getRandomArrayItem(emotion),
     author: generateAuthorName(),
     date: generateData(),
   };
