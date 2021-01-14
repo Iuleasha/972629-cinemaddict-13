@@ -176,7 +176,7 @@ export default class Popup extends SmartView {
     evt.target.classList.toggle(`film-card__controls-item--active`);
 
     this.updateData(
-      {[type]: !this._data[type]},
+        {[type]: !this._data[type]}
     );
 
     this._callback.controllersClick({[type]: this._data[type]});
