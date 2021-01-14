@@ -7,7 +7,6 @@ import FilmsListComponent from "../view/films-list";
 import FilmsContainerComponent from "../view/films-container";
 import {ExtraType, FilterType, SortType} from '../const';
 import MoviePresenter from './movie-card';
-import PopupPresenter from './popup';
 import SortView from "../view/sort";
 import FilmCardExtras from "../view/extra";
 import FilmCard from "../view/film-card";
@@ -28,7 +27,6 @@ export class MovieList {
     this._filmsListComponent = new FilmsListComponent();
     this._filmsContainerComponent = new FilmsContainerComponent();
     this._noMovies = new NoMovies();
-    this._popupPresenter = new PopupPresenter();
     this._showMoreButtonComponent = new ShowMoreBtn();
     this._sortComponent = new SortView(this._currentSortType);
     this._navigatioComponent = new Navigation();
@@ -55,16 +53,20 @@ export class MovieList {
 
   _renderExtras() {
     Object.keys(ExtraType).forEach((item) => {
-      const extras = new FilmCardExtras(ExtraType[item]);
-      const extrasContainerComponent = new FilmsContainerComponent();
+      const extrasMovieArray = this._sortExtras(ExtraType[item]);
 
-      this._sortExtras(ExtraType[item]).slice(0, MAX_EXTRAS_LENGTH).forEach((movie) => {
-        const movieContainer = new FilmCard(movie);
-        render(extrasContainerComponent, movieContainer, RenderPosition.BEFOREEND);
-      });
+      if (extrasMovieArray.length) {
+        const extras = new FilmCardExtras(ExtraType[item]);
+        const extrasContainerComponent = new FilmsContainerComponent();
 
-      render(extras, extrasContainerComponent, RenderPosition.BEFOREEND);
-      render(this._filmsComponent, extras, RenderPosition.BEFOREEND);
+        this._sortExtras(ExtraType[item]).slice(0, MAX_EXTRAS_LENGTH).forEach((movie) => {
+          const movieContainer = new FilmCard(movie);
+          render(extrasContainerComponent, movieContainer, RenderPosition.BEFOREEND);
+        });
+
+        render(extras, extrasContainerComponent, RenderPosition.BEFOREEND);
+        render(this._filmsComponent, extras, RenderPosition.BEFOREEND);
+      }
     });
   }
 
@@ -77,8 +79,10 @@ export class MovieList {
     this._navigatioComponent.updateCount(updatedType);
   }
 
-  _handleOpenPopup(movie) {
-    this._popupPresenter.init(movie, this._handleMovieChange);
+  _handleOpenPopup() {
+    Object
+      .values(this._moviePresenter)
+      .forEach((presenter) => presenter.resetView());
   }
 
   _handleShowMoreButtonClick() {
@@ -217,9 +221,13 @@ export class MovieList {
   _sortExtras(extraType) {
     switch (extraType) {
       case ExtraType.BY_COMMENTS:
-        return this._sourcedBoardTasks.sort((a, b) => b.comments.length - a.comments.length);
+        const sortedByCommentsArray = this._sourcedBoardTasks.sort((a, b) => b.comments.length - a.comments.length);
+
+        return sortedByCommentsArray[0].comments.length ? sortedByCommentsArray : [];
       case ExtraType.BY_RATING:
-        return this._sourcedBoardTasks.sort((a, b) => Number(b.rating) - Number(a.rating));
+        const sortedByRatingArray = this._sourcedBoardTasks.sort((a, b) => Number(b.rating) - Number(a.rating));
+
+        return Number(sortedByRatingArray[0].rating) > 0 ? sortedByRatingArray : [];
       default:
         return this._movies;
     }
