@@ -1,4 +1,4 @@
-import Abstract from '../view/abstract.js';
+import Abstract from '../view/abstract';
 
 export const RenderPosition = {
   AFTERBEGIN: `afterbegin`,
@@ -14,14 +14,7 @@ export const render = (container, child, place) => {
     child = child.getElement();
   }
 
-  switch (place) {
-    case RenderPosition.AFTERBEGIN:
-      container.prepend(child);
-      break;
-    case RenderPosition.BEFOREEND:
-      container.append(child);
-      break;
-  }
+  container.insertAdjacentElement(place, child);
 };
 
 export const createElement = (template) => {

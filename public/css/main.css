@@ -255,11 +255,12 @@ button {
 }
 
 .main-navigation__item-count {
-  background:rgba(0,46,255, 0.4);
+  background: rgba(0, 46, 255, 0.4);
   border-radius: 18px;
   font-weight: 500;
   padding: 0 10px;
   width: 1em;
+  pointer-events: none;
 }
 
 .main-navigation__additional {
@@ -1095,12 +1096,19 @@ button {
   font-size: 20px;
   padding: 0 5px;
 }
+
 .statistic__chart-wrap {
   margin-left: 30px;
   width: 1000px;
 }
+
 .no-result {
   min-height: 300px;
   padding-top: 50px;
   padding-bottom: 50px;
 }
+
+.form-error {
+  border-color: #ff0000;
+}
+
