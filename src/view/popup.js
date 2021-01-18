@@ -13,13 +13,13 @@ const createGenreItem = (array) => {
 const createCommentItemTemplate = (comment) => {
   return (`<li class="film-details__comment" data-id="${comment.id}">
             <span class="film-details__comment-emoji">
-              <img src="./images/emoji/${comment.emotion}.png" width="55" height="55" alt="emoji-smile">
+                <img src="./images/emoji/${comment.emotion}.png" width="55" height="55" alt="emoji-${comment.emotion}">
             </span>
             <div>
               <p class="film-details__comment-text">${comment.comment}</p>
               <p class="film-details__comment-info">
                 <span class="film-details__comment-author">${comment.author}</span>
-                <span class="film-details__comment-day">${formatDate(comment.date, `YYYY/MM/DD HH:mm`)}</span>
+                  <span class="film-details__comment-day">${comment.date}</span>
                   <button class="film-details__comment-delete">Delete</button>
                 </p>
               </div>
@@ -125,21 +125,7 @@ const createPopupTemplate = (film) => {
     </div>
 
     <div class="film-details__bottom-container">
-      <section class="film-details__comments-wrap">
-        <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${film.comments.length}</span></h3>
-
-        ${createCommentsListTemplate(film.comments)}
-
-        <div class="film-details__new-comment">
-          <div class="film-details__add-emoji-label"></div>
-
-          <label class="film-details__comment-label">
-            <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
-          </label>
-
-          ${createEmojiListTemplate()}
-        </div>
-      </section>
+      <section class="film-details__comments-wrap"></section>
     </div>
   </form>
 </section>`;
@@ -152,9 +138,6 @@ export default class Popup extends SmartView {
     this._data = film;
 
     this._controllerClickHandler = this._controllerClickHandler.bind(this);
-    this._selectEmojiClickHandler = this._selectEmojiClickHandler.bind(this);
-
-    this._setInnerHandlers();
   }
 
   getTemplate() {
@@ -164,24 +147,12 @@ export default class Popup extends SmartView {
   restoreHandlers() {
     this.setCloseClickHandler(this._callback.closeClick);
     this.setControlsHandler(this._callback.controllersClick);
-    this._setInnerHandlers();
   }
 
   _controllerClickHandler(evt) {
     evt.preventDefault();
 
-    const type = evt.target.name;
-    const scrollPosition = this.getElement().scrollTop;
-
-    evt.target.classList.toggle(`film-card__controls-item--active`);
-
-    this.updateData(
-        {[type]: !this._data[type]}
-    );
-
-    this._callback.controllersClick({[type]: this._data[type]});
-
-    document.querySelector(`.film-details`).scroll(0, scrollPosition);
+    this._callback.controllersClick(evt.target.name);
   }
 
   setControlsHandler(callback) {
@@ -197,19 +168,5 @@ export default class Popup extends SmartView {
   setCloseClickHandler(callback) {
     this._callback.closeClick = callback;
     this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, this._callback.closeClick);
-  }
-
-  _selectEmojiClickHandler(evt) {
-    evt.preventDefault();
-
-    const emojiValue = evt.target.value;
-
-    this.getElement().querySelector(`.film-details__add-emoji-label`).innerHTML = `<img src="./images/emoji/${emojiValue}.png" width="55" height="55" alt="emoji-${emojiValue}">`;
-  }
-
-  _setInnerHandlers() {
-    const emoji = this.getElement().querySelectorAll(`.film-details__emoji-item`);
-
-    emoji.forEach((item) => item.addEventListener(`change`, this._selectEmojiClickHandler));
   }
 }
