@@ -48,10 +48,6 @@ const generateFilmPoster = () => {
   return `./images/posters/${getRandomArrayItem(filmPoster)}`;
 };
 
-const generateFilmDuration = () => {
-  return {hour: getRandomInteger(0, 3), minutes: getRandomInteger(0, 59)};
-};
-
 const generateGenre = () => {
   const genres =
     [`Action`,

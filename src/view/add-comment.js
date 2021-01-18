@@ -1,5 +1,6 @@
-import SmartView from "./smart";
+import he from "he";
 import {emotion} from "../mock/comment-mock";
+import SmartView from "./smart";
 
 const createEmojiItemTemplate = (emoji) => {
   return (`<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emoji}" value="${emoji}">
@@ -83,7 +84,7 @@ export default class AddComment extends SmartView {
     const commentInput = this.getElement().querySelector(`.film-details__comment-input`);
     const emojiWrapper = this.getElement().querySelector(`.film-details__add-emoji-label`);
 
-    this._comment.comment = commentInput.value || ``;
+    this._comment.comment = he.encode(commentInput.value) || ``;
     this._comment.date = new Date();
     this._comment.author = `Я`;
 

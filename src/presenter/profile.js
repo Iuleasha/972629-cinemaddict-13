@@ -1,5 +1,5 @@
-import {render, replace, remove, RenderPosition} from "../utils/render";
-import {getWatchedFilms,generateRank} from "../utils/common";
+import {generateRank, getWatchedFilms} from "../utils/common";
+import {remove, render, RenderPosition, replace} from "../utils/render";
 import ProfileView from "../view/profile";
 
 export default class Profile {

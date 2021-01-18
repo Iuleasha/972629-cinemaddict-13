@@ -56,21 +56,21 @@ export default class Film {
 
   _handlerChangeData(key) {
     const userDetails = Object.assign(
-      {},
-      this._film.userDetails,
-      {[key]: !this._film.userDetails[key]});
+        {},
+        this._film.userDetails,
+        {[key]: !this._film.userDetails[key]});
 
     if (key === FilterType.ALREADY_WATCHED) {
       userDetails.watchingDate = userDetails.alreadyWatched ? new Date() : ``;
     }
 
     this._changeData(
-      UserAction.UPDATE_FILM,
-      UpdateType.PATCH,
-      Object.assign(
-        {},
-        this._film,
-        {userDetails}));
+        UserAction.UPDATE_FILM,
+        UpdateType.PATCH,
+        Object.assign(
+            {},
+            this._film,
+            {userDetails}));
   }
 
   _handleCommentEvent(userAction, update) {
