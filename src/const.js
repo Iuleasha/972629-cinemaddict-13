@@ -11,7 +11,8 @@ export const UserAction = {
 };
 
 export const FilterType = {
-  WATCHED: `watched`,
+  STATISTIC: `alreadyWatched`,
+  ALREADY_WATCHED: `alreadyWatched`,
   FAVORITE: `favorite`,
   WATCHLIST: `watchlist`,
   ALL: `all`,
@@ -27,3 +28,18 @@ export const UpdateType = {
   MINOR: `MINOR`,
   MAJOR: `MAJOR`,
 };
+
+export const StatisticsType = {
+  ALL_TIME: `all-time`,
+  TODAY: `today`,
+  WEEK: `week`,
+  MONTH: `month`,
+  YEAR: `year`,
+};
+
+export const MenuItem = {
+  FILMS: `FILMS`,
+  STATISTICS: `STATISTICS`
+};
+
+export const FILM_RUNTIME_FORMAT = `H[h] m[m]`;

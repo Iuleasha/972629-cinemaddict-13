@@ -5,7 +5,7 @@ const createNoMoviesTemplate = () => `<section class="films-list">
     </section>`;
 
 
-export default class NoMovies extends AbstractView {
+export default class NoFilms extends AbstractView {
   getTemplate() {
     return createNoMoviesTemplate();
   }

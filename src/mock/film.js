@@ -154,57 +154,36 @@ const generateDetailsAge = () => {
 };
 
 export const generateFilmCard = (index) => {
+  const isWatched = !!getRandomInteger(0, 1);
   return {
     id: index,
-    poster: generateFilmPoster(),
-    title: generateFilmTitle(),
-    rating: randomNumber(1, 10).toFixed(1),
-    duration: generateFilmDuration(),
-    genres: generateGenres(),
-    country: generateCountry(),
-    description: generateDescriptionFilm(),
     comments: generateCommentsArray(),
-    watchlist: !!getRandomInteger(0, 1),
-    watched: !!getRandomInteger(0, 1),
-    favorite: !!getRandomInteger(0, 1),
-    director: generateDirectorArray(),
-    writers: generateWritersArray(),
-    actors: generateActorsArray(),
-    releaseDate: generateData(),
-    age: generateDetailsAge(),
+    filmInfo: {
+      title: generateFilmTitle(),
+      alternativeTitle: generateFilmTitle(),
+      totalRating: randomNumber(1, 10).toFixed(1),
+      poster: generateFilmPoster(),
+      ageRating: generateDetailsAge(),
+      director: generateDirectorArray(),
+      writers: generateWritersArray(),
+      actors: generateActorsArray(),
+      release: {
+        date: generateData(),
+        releaseCountry: generateCountry(),
+      },
+      runtime: randomNumber(40, 200),
+      genre: generateGenres(),
+      description: generateDescriptionFilm(),
+    },
+    userDetails: {
+      watchlist: !!getRandomInteger(0, 1),
+      alreadyWatched: isWatched,
+      watchingDate: isWatched ? generateData() : ``,
+      favorite: !!getRandomInteger(0, 1),
+    },
   };
 };
+
 const FILMS_COUNT = 20;
 
 export const films = new Array(getRandomInteger(0, FILMS_COUNT)).fill().map((item, index) => generateFilmCard(index));
-export const watchlist = [];
-export const watched = [];
-export const favorite = [];
-export let defaultSort = [];
-
-export const filterFilms = () => {
-  films.forEach((item) => {
-    if (item.watchlist) {
-      watchlist.push(item);
-    }
-    if (item.watched) {
-      watched.push(item);
-    }
-    if (item.favorite) {
-      favorite.push(item);
-    }
-  });
-};
-
-export const selectArray = (type) => {
-  switch (type) {
-    case `watchlist`:
-      return watchlist;
-    case `watched`:
-      return watched;
-    case `favorite`:
-      return favorite;
-    default:
-      return films;
-  }
-};
