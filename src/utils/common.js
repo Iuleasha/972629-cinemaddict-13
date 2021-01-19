@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import objectSupport from "dayjs/plugin/objectSupport";
-import {FILM_RUNTIME_FORMAT} from "../const";
+import {FILM_RUNTIME_FORMAT, StatisticsType} from "../const";
 
 export const getRandomInteger = (a = 0, b = 1) => {
   const lower = Math.ceil(Math.min(a, b));
@@ -66,9 +66,9 @@ export const sortGenres = (films) => {
   });
 
   return Object.fromEntries(
-      Object
+    Object
       .entries(genres)
-      .sort(([, a], [, b]) => b - a)
+      .sort(([, a], [, b]) => b - a),
   );
 };
 
@@ -99,4 +99,8 @@ export const generateRank = (films) => {
   } else {
     return ``;
   }
+};
+
+export const filterWatchedFilmsByPeriod = (films, type) => {
+  return type !== StatisticsType.ALL_TIME ? films.filter((film) => dayjs(film.userDetails.watchingDate).isSame(dayjs(), type)) : films;
 };

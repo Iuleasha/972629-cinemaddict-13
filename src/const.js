@@ -31,7 +31,7 @@ export const UpdateType = {
 
 export const StatisticsType = {
   ALL_TIME: `all-time`,
-  TODAY: `today`,
+  TODAY: `day`,
   WEEK: `week`,
   MONTH: `month`,
   YEAR: `year`,
@@ -39,7 +39,30 @@ export const StatisticsType = {
 
 export const MenuItem = {
   FILMS: `FILMS`,
-  STATISTICS: `STATISTICS`
+  STATISTICS: `STATISTICS`,
 };
+
+export const statisticsItems = [
+  {
+    type: StatisticsType.ALL_TIME,
+    name: `All time`,
+  },
+  {
+    type: StatisticsType.TODAY,
+    name: `Today`,
+  },
+  {
+    type: StatisticsType.WEEK,
+    name: `Week`,
+  },
+  {
+    type: StatisticsType.MONTH,
+    name: `Month`,
+  },
+  {
+    type: StatisticsType.YEAR,
+    name: `Year`,
+  },
+];
 
 export const FILM_RUNTIME_FORMAT = `H[h] m[m]`;

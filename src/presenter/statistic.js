@@ -1,9 +1,9 @@
-import StatisticView from "../view/statistic";
-import {remove, render, RenderPosition} from "../utils/render";
-import {MenuItem, StatisticsType} from "../const";
-import {getWatchedFilms} from "../utils/common";
 import dayjs from "dayjs";
 import isToday from "dayjs/plugin/isToday";
+import {MenuItem, StatisticsType} from "../const";
+import {filterWatchedFilmsByPeriod, getWatchedFilms} from "../utils/common";
+import {remove, render, RenderPosition} from "../utils/render";
+import StatisticView from "../view/statistic";
 
 dayjs.extend(isToday);
 
@@ -13,7 +13,6 @@ export default class Statistic {
     this._statsModel = statisticModel;
     this._filmsModel = filmsModel;
     this._statisticsComponent = null;
-    this._wathedFilms = this.getWatchedFilms(getWatchedFilms(this._filmsModel.getFilms()), StatisticsType.ALL_TIME);
 
     this._handleSwitchStatistic = this._handleSwitchStatistic.bind(this);
     this._showStatusEvent = this._showStatusEvent.bind(this);
@@ -22,7 +21,8 @@ export default class Statistic {
   }
 
   init() {
-    this._statisticsComponent = new StatisticView(this._wathedFilms);
+    this._wathedFilms = filterWatchedFilmsByPeriod(getWatchedFilms(this._filmsModel.getFilms()), StatisticsType.ALL_TIME);
+    this._statisticsComponent = new StatisticView(this._wathedFilms, StatisticsType.ALL_TIME);
     this._statisticsComponent.setSwitchStatisticsHandler(this._handleSwitchStatistic);
   }
 
@@ -34,9 +34,7 @@ export default class Statistic {
     this._currentMenyType = menuType;
 
     if (MenuItem.FILMS !== menuType) {
-      this._wathedFilms = this.getWatchedFilms(getWatchedFilms(this._filmsModel.getFilms()), StatisticsType.ALL_TIME);
-      this._statisticsComponent = new StatisticView(this._wathedFilms, StatisticsType.ALL_TIME);
-      this._statisticsComponent.setSwitchStatisticsHandler(this._handleSwitchStatistic);
+      this.init();
       this.renderStatistic();
     } else {
       remove(this._statisticsComponent);
@@ -44,25 +42,13 @@ export default class Statistic {
   }
 
   _handleSwitchStatistic(type) {
-    this._statisticsComponent.updateData({sortType: type, watchedFilms: this.getWatchedFilms(getWatchedFilms(this._filmsModel.getFilms()), type)});
+    this._statisticsComponent.updateData({
+      sortType: type,
+      watchedFilms: filterWatchedFilmsByPeriod(getWatchedFilms(this._filmsModel.getFilms()), type),
+    });
   }
 
   renderStatistic() {
     render(this._mainContainerContainer, this._statisticsComponent, RenderPosition.BEFOREEND);
-  }
-
-  getWatchedFilms(films, type) {
-    switch (type) {
-      case StatisticsType.TODAY:
-        return films.filter((film) => dayjs(film.userDetails.watchingDate).isToday());
-      case StatisticsType.WEEK:
-        return films.filter((film) => dayjs(film.userDetails.watchingDate).isSame(dayjs(), `week`));
-      case StatisticsType.MONTH:
-        return films.filter((film) => dayjs(film.userDetails.watchingDate).isSame(dayjs(), `month`));
-      case StatisticsType.YEAR:
-        return films.filter((film) => dayjs(film.userDetails.watchingDate).isSame(dayjs(), `year`));
-      default:
-        return films;
-    }
   }
 }

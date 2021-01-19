@@ -1,8 +1,8 @@
-import SmartView from './smart';
-import {StatisticsType} from "../const";
-import {formatTotalDuration, sortGenres, generateRank} from "../utils/common";
 import Chart from "chart.js";
 import ChartDataLabels from 'chartjs-plugin-datalabels';
+import {statisticsItems} from "../const";
+import {formatTotalDuration, generateRank, sortGenres} from "../utils/common";
+import SmartView from './smart';
 
 const renderChart = (statisticCtx, labels, data) => {
   const BAR_HEIGHT = 50;
@@ -74,8 +74,8 @@ const createFilterItemTemplate = (filter, currentStatisticsType) => {
            <label for="statistic-${type}" class="statistic__filters-label">${name}</label>`);
 };
 
-const createFiltersTemplate = (filterItems, currentStatisticsType) => {
-  const filterItemsTemplate = filterItems
+const createFiltersTemplate = (currentStatisticsType) => {
+  const filterItemsTemplate = statisticsItems
     .map((filter) => createFilterItemTemplate(filter, currentStatisticsType))
     .join(``);
 
@@ -85,8 +85,8 @@ const createFiltersTemplate = (filterItems, currentStatisticsType) => {
       </form>`);
 };
 
-const createStatisticTemplate = (filters, data) => {
-  const {totalDuration, sortType, watchedFilms, userRank} = data;
+const createStatisticTemplate = (data) => {
+  const {totalDuration, sortType, watchedFilms, userRank, sortedGenres} = data;
 
   return `<section class="statistic">
     <p class="statistic__rank">
@@ -95,7 +95,7 @@ const createStatisticTemplate = (filters, data) => {
       <span class="statistic__rank-label">${userRank}</span>
     </p>
 
-    ${createFiltersTemplate(filters, sortType)}
+    ${createFiltersTemplate(sortType)}
 
     <ul class="statistic__text-list">
       <li class="statistic__text-item">
@@ -108,7 +108,7 @@ const createStatisticTemplate = (filters, data) => {
       </li>
       <li class="statistic__text-item">
         <h4 class="statistic__item-title">Top genre</h4>
-        <p class="statistic__item-text">Top genre</p>
+        <p class="statistic__item-text">${Object.keys(sortedGenres)[0] || `-`}</p>
       </li>
     </ul>
 
@@ -126,18 +126,23 @@ export default class Statistic extends SmartView {
       watchedFilms: films,
       sortType: type,
       userRank: generateRank(films),
+      sortedGenres: sortGenres(films),
       totalDuration: films.reduce((acc, current) => acc + current.filmInfo.runtime, 0),
     };
-
     this._chart = null;
+
     this._statisticsTypeClickHandler = this._statisticsTypeClickHandler.bind(this);
+
     this._setChart();
   }
 
-  updateData(update) {
-    this._data.watchedFilms = update.watchedFilms;
-    this._data.sortType = update.sortType;
-    this._data.totalDuration = update.watchedFilms.reduce((acc, current) => acc + current.filmInfo.runtime, 0);
+  updateData({watchedFilms, sortType}) {
+    this._data = Object.assign({}, this._data, {
+      watchedFilms,
+      sortType,
+      totalDuration: watchedFilms.reduce((acc, current) => acc + current.filmInfo.runtime, 0),
+      sortedGenres: sortGenres(watchedFilms),
+    });
 
     this.updateElement();
   }
@@ -156,7 +161,7 @@ export default class Statistic extends SmartView {
   }
 
   getTemplate() {
-    return createStatisticTemplate(this._getStatisticFilters(), this._data);
+    return createStatisticTemplate(this._data);
   }
 
   _statisticsTypeClickHandler(evt) {
@@ -167,32 +172,8 @@ export default class Statistic extends SmartView {
 
   setSwitchStatisticsHandler(callback) {
     this._callback.showStatistic = callback;
-    this.getElement().querySelector(`.statistic__filters`).addEventListener(`change`, this._statisticsTypeClickHandler);
-  }
 
-  _getStatisticFilters() {
-    return [
-      {
-        type: StatisticsType.ALL_TIME,
-        name: `All time`,
-      },
-      {
-        type: StatisticsType.TODAY,
-        name: `Today`,
-      },
-      {
-        type: StatisticsType.WEEK,
-        name: `Week`,
-      },
-      {
-        type: StatisticsType.MONTH,
-        name: `Month`,
-      },
-      {
-        type: StatisticsType.YEAR,
-        name: `Year`,
-      },
-    ];
+    this.getElement().querySelector(`.statistic__filters`).addEventListener(`change`, this._statisticsTypeClickHandler);
   }
 
   _setChart() {
@@ -201,10 +182,8 @@ export default class Statistic extends SmartView {
     }
 
     const statisticsCanvasElement = this.getElement().querySelector(`.statistic__chart`);
-
-    const sortedGenres = sortGenres(this._data.watchedFilms);
-    const allGenres = Object.keys(sortedGenres);
-    const genresCount = Object.values(sortedGenres);
+    const allGenres = Object.keys(this._data.sortedGenres);
+    const genresCount = Object.values(this._data.sortedGenres);
 
     this._chart = renderChart(statisticsCanvasElement, allGenres, genresCount);
   }
