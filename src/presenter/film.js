@@ -1,22 +1,22 @@
-import {remove, render, RenderPosition, replace} from "../utils/render";
-import FilmCard from "../view/film-card";
+import {FilterType, UpdateType, UserAction} from "../const";
 import CommentsModel from "../model/comments";
-import PopupView from "../view/popup";
-import {UpdateType, UserAction} from "../const.js";
-import CommentsView from "../view/comments";
+import {remove, render, RenderPosition, replace} from "../utils/render";
 import AddCommentView from "../view/add-comment";
+import CommentsView from "../view/comments";
+import FilmCard from "../view/film-card";
+import PopupView from "../view/popup";
 
 const Mode = {
   CLOSE: `CLOSE`,
   OPEN: `OPEN`,
 };
 
-export default class MovieCard {
-  constructor(moviesContainer, changeData, changeMode) {
-    this._moveisContainer = moviesContainer;
+export default class Film {
+  constructor(filmsContainer, changeData, changeMode) {
+    this._filmsContainer = filmsContainer;
     this._changeData = changeData;
     this._changeMode = changeMode;
-    this._moveiComponent = null;
+    this._filmComponent = null;
     this._popupComponent = null;
     this._mode = Mode.CLOSE;
     this._commentsModel = new CommentsModel();
@@ -31,64 +31,73 @@ export default class MovieCard {
 
   }
 
-  init(movie) {
-    this._movie = movie;
-    this._commentsModel.setComments(this._movie.comments);
+  init(film) {
+    this._film = film;
+    this._commentsModel.setComments(this._film.comments);
 
-    const prevMovieComponent = this._moveiComponent;
+    const prevMovieComponent = this._filmComponent;
 
-    this._moveiComponent = new FilmCard(movie);
-    this._moveiComponent.setClickHandler(this._handleOpenClick);
-    this._moveiComponent.setControlsHandler(this._handlerChangeData);
+    this._filmComponent = new FilmCard(film);
+    this._filmComponent.setClickHandler(this._handleOpenClick);
+    this._filmComponent.setControlsHandler(this._handlerChangeData);
 
     if (prevMovieComponent === null) {
-      render(this._moveisContainer, this._moveiComponent, RenderPosition.BEFOREEND);
+      render(this._filmsContainer, this._filmComponent, RenderPosition.BEFOREEND);
       return;
     }
 
-    replace(this._moveiComponent, prevMovieComponent);
+    replace(this._filmComponent, prevMovieComponent);
     remove(prevMovieComponent);
   }
 
   destroy() {
-    remove(this._moveiComponent);
+    remove(this._filmComponent);
   }
 
   _handlerChangeData(key) {
+    const userDetails = Object.assign(
+        {},
+        this._film.userDetails,
+        {[key]: !this._film.userDetails[key]});
+
+    if (key === FilterType.ALREADY_WATCHED) {
+      userDetails.watchingDate = userDetails.alreadyWatched ? new Date() : ``;
+    }
+
     this._changeData(
         UserAction.UPDATE_FILM,
         UpdateType.PATCH,
         Object.assign(
             {},
-            this._movie,
-            {[key]: !this._movie[key]}));
+            this._film,
+            {userDetails}));
   }
 
   _handleCommentEvent(userAction, update) {
     switch (userAction) {
       case UserAction.ADD_COMMENT:
-        this._movie.comments.push(update);
-        this._filmCommentsComponent.updateData(this._movie.comments);
+        this._film.comments.push(update);
+        this._filmCommentsComponent.updateData(this._film.comments);
         this._newCommentComponent.updateData();
         break;
 
       case UserAction.DELETE_COMMENT:
-        let commentIdToDelete = this._movie.comments.findIndex((item) => item.id === update);
-        this._movie.comments.splice(commentIdToDelete, 1);
-        this._filmCommentsComponent.updateData(this._movie.comments);
+        let commentIdToDelete = this._film.comments.findIndex((item) => item.id === update);
+        this._film.comments.splice(commentIdToDelete, 1);
+        this._filmCommentsComponent.updateData(this._film.comments);
         break;
     }
 
-    this._handlerChangeData({comments: this._movie.comments});
+    this._handlerChangeData({comments: this._film.comments});
   }
 
   _openPopup() {
     document.addEventListener(`keydown`, this._escKeyDownHandler);
     document.body.classList.add(`hide-overflow`);
 
-    this._popupComponent = new PopupView(this._movie);
+    this._popupComponent = new PopupView(this._film);
     this._newCommentComponent = new AddCommentView();
-    this._filmCommentsComponent = new CommentsView(this._movie.comments);
+    this._filmCommentsComponent = new CommentsView(this._film.comments);
 
     this._popupComponent.setCloseClickHandler(this._handleCloseClick);
     this._popupComponent.setControlsHandler(this._handlerChangeData);
@@ -131,7 +140,7 @@ export default class MovieCard {
 
   destroy() {
     document.removeEventListener(`keydown`, this._escKeyDownHandler);
-    remove(this._moveiComponent);
+    remove(this._filmComponent);
   }
 
   _escKeyDownHandler(evt) {

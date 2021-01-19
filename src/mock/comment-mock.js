@@ -25,8 +25,8 @@ const generateAuthorName = () => {
 export const emotion = [`smile`, `sleeping`, `puke`, `angry`];
 
 export const generateData = () => {
-  const maxYearsGap = 2010;
-  const yearGap = getRandomInteger(maxYearsGap - 10, 2020);
+  const maxYearsGap = 2021;
+  const yearGap = getRandomInteger(maxYearsGap - 1, maxYearsGap);
   const daysGap = getRandomInteger(1, 31);
   const monthGap = getRandomInteger(1, 12);
 

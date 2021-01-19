@@ -1,21 +1,23 @@
-import FilterView from "../view/filter.js";
-import {remove, render, RenderPosition, replace} from "../utils/render.js";
-import {filter} from "../utils/filter.js";
-import {FilterType, UpdateType} from "../const.js";
+import FilterView from "../view/filter";
+import {remove, render, RenderPosition, replace} from "../utils/render";
+import {filter} from "../utils/filter";
+import {FilterType, MenuItem, UpdateType} from "../const";
 
 export default class Filter {
-  constructor(filterContainer, filterModel, moviesListModel) {
+  constructor(filterContainer, filterModel, filmsListModel, displayedContentModule) {
     this._filterContainer = filterContainer;
     this._filterModel = filterModel;
-    this._moviesListModel = moviesListModel;
+    this._filmsListModel = filmsListModel;
+    this._displayedContentModule = displayedContentModule;
     this._currentFilter = null;
 
     this._filterComponent = null;
 
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleFilterTypeChange = this._handleFilterTypeChange.bind(this);
+    this._handleShowStatistic = this._handleShowStatistic.bind(this);
 
-    this._moviesListModel.addObserver(this._handleModelEvent);
+    this._filmsListModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
   }
 
@@ -27,6 +29,7 @@ export default class Filter {
 
     this._filterComponent = new FilterView(filters, this._currentFilter);
     this._filterComponent.setFilterTypeChangeHandler(this._handleFilterTypeChange);
+    this._filterComponent.setShowStatisticHandler(this._handleShowStatistic);
 
     if (prevFilterComponent === null) {
       render(this._filterContainer, this._filterComponent, RenderPosition.AFTERBEGIN);
@@ -46,32 +49,37 @@ export default class Filter {
     if (this._currentFilter === filterType) {
       return;
     }
-
+    this._displayedContentModule.setDisplayedContent(MenuItem.FILMS);
     this._filterModel.setFilter(UpdateType.MAJOR, filterType);
   }
 
+  _handleShowStatistic() {
+    this._currentFilter = null;
+    this._displayedContentModule.setDisplayedContent(MenuItem.STATISTICS);
+  }
+
   _getFilters() {
-    const movies = this._moviesListModel.getMovies();
+    const films = this._filmsListModel.getFilms();
 
     return [
       {
         type: FilterType.ALL,
-        name: `All movies`,
+        name: `All films`,
       },
       {
         type: FilterType.WATCHLIST,
         name: `Watchlist`,
-        count: filter[FilterType.WATCHLIST](movies).length,
+        count: filter[FilterType.WATCHLIST](films).length,
       },
       {
-        type: FilterType.WATCHED,
+        type: FilterType.ALREADY_WATCHED,
         name: `History`,
-        count: filter[FilterType.WATCHED](movies).length,
+        count: filter[FilterType.ALREADY_WATCHED](films).length,
       },
       {
         type: FilterType.FAVORITE,
         name: `Favorites`,
-        count: filter[FilterType.FAVORITE](movies).length,
+        count: filter[FilterType.FAVORITE](films).length,
       },
     ];
   }
