@@ -66,9 +66,9 @@ export const sortGenres = (films) => {
   });
 
   return Object.fromEntries(
-    Object
+      Object
       .entries(genres)
-      .sort(([, a], [, b]) => b - a),
+      .sort(([, a], [, b]) => b - a)
   );
 };
 

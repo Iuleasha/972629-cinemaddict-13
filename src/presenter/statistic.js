@@ -21,7 +21,7 @@ export default class Statistic {
   }
 
   init() {
-    this._wathedFilms = filterWatchedFilmsByPeriod(getWatchedFilms(this._filmsModel.getFilms()), StatisticsType.ALL_TIME);
+    this._wathedFilms = filterWatchedFilmsByPeriod(this._getWatchedFilms(), StatisticsType.ALL_TIME);
     this._statisticsComponent = new StatisticView(this._wathedFilms, StatisticsType.ALL_TIME);
     this._statisticsComponent.setSwitchStatisticsHandler(this._handleSwitchStatistic);
   }
@@ -41,10 +41,14 @@ export default class Statistic {
     }
   }
 
+  _getWatchedFilms() {
+    return getWatchedFilms(this._filmsModel.getFilms());
+  }
+
   _handleSwitchStatistic(type) {
     this._statisticsComponent.updateData({
       sortType: type,
-      watchedFilms: filterWatchedFilmsByPeriod(getWatchedFilms(this._filmsModel.getFilms()), type),
+      watchedFilms: filterWatchedFilmsByPeriod(this._getWatchedFilms(), type),
     });
   }
 
