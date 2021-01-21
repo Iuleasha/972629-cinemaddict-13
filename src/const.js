@@ -66,4 +66,6 @@ export const statisticsItems = [
   },
 ];
 
+export const emotions = [`smile`, `sleeping`, `puke`, `angry`];
+
 export const FILM_RUNTIME_FORMAT = `H[h] m[m]`;
