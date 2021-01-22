@@ -87,6 +87,7 @@ export default class Film {
     switch (userAction) {
       case UserAction.ADD_COMMENT:
         this._filmCommentsComponent.updateData(update);
+        this._commentsModel.setComments(update);
         this._newCommentComponent.updateData();
         break;
 
