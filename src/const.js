@@ -27,6 +27,7 @@ export const UpdateType = {
   PATCH: `PATCH`,
   MINOR: `MINOR`,
   MAJOR: `MAJOR`,
+  INIT: `INIT`
 };
 
 export const StatisticsType = {
@@ -64,5 +65,7 @@ export const statisticsItems = [
     name: `Year`,
   },
 ];
+
+export const emotions = [`smile`, `sleeping`, `puke`, `angry`];
 
 export const FILM_RUNTIME_FORMAT = `H[h] m[m]`;

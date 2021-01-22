@@ -6,6 +6,7 @@ import FilmCard from "../view/film-card";
 import FilmsComponent from "../view/films";
 import FilmsContainerComponent from "../view/films-container";
 import FilmsListComponent from "../view/films-list";
+import LoadingView from "../view/loading.js";
 import NoMovies from "../view/no-films";
 import ShowMoreBtn from "../view/show-more";
 import SortView from "../view/sort";
@@ -15,7 +16,7 @@ const FILM_COUNT_PER_STEP = 5;
 const MAX_EXTRAS_LENGTH = 2;
 
 export class FilmsList {
-  constructor(filmsListContainer, filmsModel, filterModel, displayedContentModule) {
+  constructor(filmsListContainer, filmsModel, filterModel, displayedContentModule, api) {
     this._filmsModel = filmsModel;
     this._filterModel = filterModel;
     this._displayedContentModule = displayedContentModule;
@@ -27,9 +28,12 @@ export class FilmsList {
     this._filmsComponent = new FilmsComponent();
     this._filmsListComponent = new FilmsListComponent();
     this._filmsContainerComponent = new FilmsContainerComponent();
+    this._loadingComponent = new LoadingView();
     this._noMovies = new NoMovies();
     this._showMoreButtonComponent = null;
     this._sortComponent = new SortView(this._currentSortType);
+    this._isLoading = true;
+    this._api = api;
 
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._showStatusEvent = this._showStatusEvent.bind(this);
@@ -68,7 +72,7 @@ export class FilmsList {
       case SortType.BY_RATING:
         return filtredFilms.sort((a, b) => Number(b.filmInfo.totalRating) - Number(a.filmInfo.totalRating));
       case SortType.BY_DATE:
-        return filtredFilms.sort((a, b) => b.filmInfo.release.date - a.filmInfo.release.date);
+        return filtredFilms.sort((a, b) => new Date(b.filmInfo.release.date) - new Date(a.filmInfo.release.date));
     }
 
     return filtredFilms;
@@ -105,6 +109,11 @@ export class FilmsList {
         this._clearFilmsList({resetRenderedMovieCount: true, resetSortType: true});
         this._renderBoard();
         break;
+      case UpdateType.INIT:
+        this._isLoading = false;
+        remove(this._loadingComponent);
+        this._renderBoard();
+        break;
     }
   }
 
@@ -113,7 +122,9 @@ export class FilmsList {
       return;
     }
 
-    this._filmsModel.updateFilms(updateType, update);
+    this._api.updateTask(update).then((response) => {
+      this._filmsModel.updateFilms(updateType, response);
+    });
   }
 
   _handleModeChange() {
@@ -157,13 +168,18 @@ export class FilmsList {
   }
 
   _renderMovie(film) {
-    const filmPresenter = new FilmPresenter(this._filmsContainerComponent, this._handleFilmUpdate, this._handleModeChange);
+    const filmPresenter = new FilmPresenter(this._filmsContainerComponent, this._handleFilmUpdate, this._handleModeChange, this._api);
     filmPresenter.init(film);
     this._filmsPresenters[film.id] = filmPresenter;
   }
 
   _renderMovies(films) {
     films.forEach((film) => this._renderMovie(film));
+  }
+
+  _renderLoading() {
+    render(this._filmsComponent, this._loadingComponent, RenderPosition.BEFOREEND);
+    render(this._filmsListContainer, this._filmsComponent, RenderPosition.BEFOREEND);
   }
 
   _renderNoMovie() {
@@ -182,6 +198,11 @@ export class FilmsList {
   }
 
   _renderBoard() {
+    if (this._isLoading) {
+      this._renderLoading();
+      return;
+    }
+
     const films = this._getFilms();
     const filmsCount = films.length;
 
@@ -246,6 +267,7 @@ export class FilmsList {
 
     remove(this._noMovies);
     remove(this._sortComponent);
+    remove(this._loadingComponent);
 
     if (this._showMoreButtonComponent) {
       remove(this._showMoreButtonComponent);

@@ -12,10 +12,11 @@ const Mode = {
 };
 
 export default class Film {
-  constructor(filmsContainer, changeData, changeMode) {
+  constructor(filmsContainer, changeData, changeMode, api) {
     this._filmsContainer = filmsContainer;
     this._changeData = changeData;
     this._changeMode = changeMode;
+    this._api = api;
     this._filmComponent = null;
     this._popupComponent = null;
     this._mode = Mode.CLOSE;
@@ -33,7 +34,6 @@ export default class Film {
 
   init(film) {
     this._film = film;
-    this._commentsModel.setComments(this._film.comments);
 
     const prevMovieComponent = this._filmComponent;
 
@@ -97,23 +97,28 @@ export default class Film {
 
     this._popupComponent = new PopupView(this._film);
     this._newCommentComponent = new AddCommentView();
-    this._filmCommentsComponent = new CommentsView(this._film.comments);
 
     this._popupComponent.setCloseClickHandler(this._handleCloseClick);
     this._popupComponent.setControlsHandler(this._handlerChangeData);
     this._newCommentComponent.setFormSubmitHandler(this._handleFormSubmit);
-    this._filmCommentsComponent.setDeleteCommentClickHandler(this._handleDeleteCommentClick);
     this._commentsModel.addObserver(this._handleCommentEvent);
 
     render(document.body, this._popupComponent, RenderPosition.BEFOREEND);
 
     this._changeMode();
     this._mode = Mode.OPEN;
-
     const commentsWrapper = this._popupComponent.getElement().querySelector(`.film-details__comments-wrap`);
 
-    render(commentsWrapper, this._filmCommentsComponent, RenderPosition.BEFOREEND);
     render(commentsWrapper, this._newCommentComponent, RenderPosition.BEFOREEND);
+
+    this._api.getComments(this._film.id).then((comments) => {
+      this._commentsModel.setComments(comments);
+      this._filmCommentsComponent = new CommentsView(comments);
+      this._filmCommentsComponent.setDeleteCommentClickHandler(this._handleDeleteCommentClick);
+
+      render(commentsWrapper, this._filmCommentsComponent, RenderPosition.AFTERBEGIN);
+    });
+
   }
 
   _closePopup() {

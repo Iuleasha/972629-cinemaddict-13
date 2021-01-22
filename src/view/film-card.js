@@ -48,7 +48,6 @@ export default class FilmCard extends Abstract {
   _controllerClickHandler(evt) {
     evt.preventDefault();
 
-    evt.target.classList.toggle(`film-card__controls-item--active`);
     this._callback.controllersClick(evt.target.dataset.type);
   }
 

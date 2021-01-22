@@ -1,5 +1,5 @@
 import he from "he";
-import {emotion} from "../mock/comment-mock";
+import {emotions} from "../const";
 import SmartView from "./smart";
 
 const createEmojiItemTemplate = (emoji) => {
@@ -11,7 +11,7 @@ const createEmojiItemTemplate = (emoji) => {
 };
 
 export const createEmojiListTemplate = () => {
-  const emojiItemsTemplate = emotion
+  const emojiItemsTemplate = emotions
     .map((emoji) => createEmojiItemTemplate(emoji))
     .join(``);
 

@@ -2,7 +2,6 @@ import SmartView from "./smart";
 import {formatDate} from '../utils/common';
 
 const createCommentTemplate = (comment) => {
-
   return `<li data-id="${comment.id}" class="film-details__comment">
       <span class="film-details__comment-emoji">
         <img src="./images/emoji/${comment.emotion}.png" width="55" height="55" alt="emoji-${comment.emotion}">
