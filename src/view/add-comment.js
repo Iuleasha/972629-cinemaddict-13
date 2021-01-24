@@ -19,13 +19,13 @@ export const createEmojiListTemplate = () => {
 };
 
 const createAddCommentTemplate = () => {
-  return `<div class="film-details__new-comment">
+  return `<form class="film-details__new-comment">
             <div class="film-details__add-emoji-label"></div>
                 <label class="film-details__comment-label">
                     <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment" type="submit"></textarea>
                 </label>
             ${createEmojiListTemplate()}
-          </div>`;
+          </form>`;
 };
 
 export default class AddComment extends SmartView {
@@ -77,16 +77,19 @@ export default class AddComment extends SmartView {
   }
 
   _formSubmitHandler(evt) {
-    if (!(evt.keyCode === 13 && evt.metaKey)) {
+    if (!(evt.keyCode === 13 && (evt.metaKey || evt.ctrlKey))) {
       return;
     }
 
     const commentInput = this.getElement().querySelector(`.film-details__comment-input`);
     const emojiWrapper = this.getElement().querySelector(`.film-details__add-emoji-label`);
 
+    if (commentInput.disabled && emojiWrapper.disabled) {
+      return;
+    }
+
     this._comment.comment = he.encode(commentInput.value) || ``;
     this._comment.date = new Date();
-    this._comment.author = `Я`;
 
     if (!this._comment.comment || !this._comment.emotion) {
       if (!this._comment.comment) {
@@ -99,6 +102,10 @@ export default class AddComment extends SmartView {
 
       return;
     }
+
+    commentInput.disabled = true;
+    emojiWrapper.disabled = true;
+
     this._callback.formSubmit(this._comment);
   }
 

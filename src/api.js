@@ -5,6 +5,8 @@ const END_POINT = `https://13.ecmascript.pages.academy/cinemaddict`;
 const Method = {
   GET: `GET`,
   PUT: `PUT`,
+  POST: `POST`,
+  DELETE: `DELETE`
 };
 const SuccessHTTPStatusRange = {
   MIN: 200,
@@ -43,7 +45,7 @@ export default class Api {
       .then((comments) => comments.map(FilmsModel.adaptToClient));
   }
 
-  updateTask(film) {
+  updateFilm(film) {
     return this._load({
       url: `movies/${film.id}`,
       method: Method.PUT,
@@ -52,6 +54,24 @@ export default class Api {
     })
       .then(Api.toJSON)
       .then(FilmsModel.adaptToClient);
+  }
+
+  addComment(comment, id) {
+    return this._load({
+      url: `comments/${id}`,
+      method: Method.POST,
+      body: JSON.stringify(comment),
+      headers: new Headers({"Content-Type": `application/json`})
+    })
+      .then(Api.toJSON)
+      .then(FilmsModel.adaptToClient);
+  }
+
+  deleteComment(commentId) {
+    return this._load({
+      url: `comments/${commentId}`,
+      method: Method.DELETE
+    });
   }
 
   _load({

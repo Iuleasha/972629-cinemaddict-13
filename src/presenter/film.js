@@ -23,13 +23,13 @@ export default class Film {
     this._commentsModel = new CommentsModel();
 
     this._handlerChangeData = this._handlerChangeData.bind(this);
+    this._handleUpdateFilmCardComments = this._handleUpdateFilmCardComments.bind(this);
     this._handleOpenClick = this._handleOpenClick.bind(this);
     this._handleCloseClick = this._handleCloseClick.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
     this._handleDeleteCommentClick = this._handleDeleteCommentClick.bind(this);
     this._handleCommentEvent = this._handleCommentEvent.bind(this);
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
-
   }
 
   init(film) {
@@ -73,22 +73,30 @@ export default class Film {
             {userDetails}));
   }
 
+  _handleUpdateFilmCardComments(comments) {
+    this._changeData(
+        UserAction.UPDATE_FILM,
+        UpdateType.PATCH,
+        Object.assign(
+            {},
+            this._film,
+            {comments}));
+  }
+
   _handleCommentEvent(userAction, update) {
     switch (userAction) {
       case UserAction.ADD_COMMENT:
-        this._film.comments.push(update);
-        this._filmCommentsComponent.updateData(this._film.comments);
+        this._filmCommentsComponent.updateData(update);
+        this._commentsModel.setComments(update);
         this._newCommentComponent.updateData();
         break;
 
       case UserAction.DELETE_COMMENT:
-        let commentIdToDelete = this._film.comments.findIndex((item) => item.id === update);
-        this._film.comments.splice(commentIdToDelete, 1);
-        this._filmCommentsComponent.updateData(this._film.comments);
+        this._filmCommentsComponent.updateData(this._commentsModel.getComments());
         break;
     }
 
-    this._handlerChangeData({comments: this._film.comments});
+    this._handleUpdateFilmCardComments(this._commentsModel.getComments().map(({id}) => id));
   }
 
   _openPopup() {
@@ -159,11 +167,18 @@ export default class Film {
   _handleDeleteCommentClick(event) {
     if (event.target.tagName === `BUTTON`) {
       const commentId = event.target.closest(`.film-details__comment`).dataset.id;
-      this._commentsModel.deleteComment(UserAction.DELETE_COMMENT, commentId);
+      event.target.innerText = `Deleting…`;
+      this._api.deleteComment(commentId).then(() => {
+        this._commentsModel.deleteComment(UserAction.DELETE_COMMENT, commentId);
+      }).catch(() => {
+        event.target.innerText = `Delete`;
+      });
     }
   }
 
   _handleFormSubmit(comment) {
-    this._commentsModel.addComment(UserAction.ADD_COMMENT, comment);
+    this._api.addComment(comment, this._film.id).then(({comments}) => {
+      this._commentsModel.addComment(UserAction.ADD_COMMENT, comments);
+    });
   }
 }

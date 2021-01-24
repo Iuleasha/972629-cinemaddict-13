@@ -122,7 +122,7 @@ export class FilmsList {
       return;
     }
 
-    this._api.updateTask(update).then((response) => {
+    this._api.updateFilm(update).then((response) => {
       this._filmsModel.updateFilms(updateType, response);
     });
   }
