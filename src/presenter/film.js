@@ -84,7 +84,7 @@ export default class Film {
   _handleUpdateFilmCardComments(comments) {
     this._changeData(
         UserAction.UPDATE_FILM,
-        UpdateType.PATCH,
+        UpdateType.EXTRA,
         Object.assign(
             {},
             this._film,
