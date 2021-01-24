@@ -1,4 +1,4 @@
-import FilmsModel from './model/films';
+import FilmsModel from '../model/films';
 
 const AUTHORIZATION = `Basic dfsdfgsdf444vwg54j`;
 const END_POINT = `https://13.ecmascript.pages.academy/cinemaddict`;
