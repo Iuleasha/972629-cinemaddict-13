@@ -122,7 +122,7 @@ export class FilmsList {
         this._renderMostCommented();
         break;
       case UpdateType.MINOR:
-        this._clearFilmsList({resetSortType: true});
+        this._clearFilmsList();
         this._renderBoard();
         break;
       case UpdateType.MAJOR:
@@ -190,7 +190,7 @@ export class FilmsList {
   }
 
   _renderMovie(film) {
-    const filmPresenter = new FilmPresenter(this._filmsContainerComponent, this._handleFilmUpdate, this._handleModeChange, this._api);
+    const filmPresenter = new FilmPresenter(this._filmsContainerComponent, this._handleFilmUpdate, this._handleModeChange, this._filterModel, this._api);
     filmPresenter.init(film);
     this._filmsPresenters[film.id] = filmPresenter;
   }
@@ -257,7 +257,7 @@ export class FilmsList {
       const extrasContainerComponent = new FilmsContainerComponent();
 
       sortedByCommentsArray.slice(0, MAX_EXTRAS_LENGTH).forEach((film) => {
-        const filmPresenter = new FilmPresenter(extrasContainerComponent, this._handleFilmUpdate, this._handleModeChange, this._api);
+        const filmPresenter = new FilmPresenter(extrasContainerComponent, this._handleFilmUpdate, this._handleModeChange, this._filterModel, this._api);
         filmPresenter.init(film);
         this._filmsExtrasByCommentsPresenters[film.id] = filmPresenter;
       });
@@ -275,7 +275,7 @@ export class FilmsList {
       const extrasContainerComponent = new FilmsContainerComponent();
 
       sortedByRatingArray.slice(0, MAX_EXTRAS_LENGTH).forEach((film) => {
-        const filmPresenter = new FilmPresenter(extrasContainerComponent, this._handleFilmUpdate, this._handleModeChange, this._api);
+        const filmPresenter = new FilmPresenter(extrasContainerComponent, this._handleFilmUpdate, this._handleModeChange, this._filterModel, this._api);
         filmPresenter.init(film);
         this._filmsExtrasByRatingPresenters[film.id] = filmPresenter;
       });

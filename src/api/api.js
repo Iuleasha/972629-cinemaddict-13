@@ -70,8 +70,18 @@ export default class Api {
   deleteComment(commentId) {
     return this._load({
       url: `comments/${commentId}`,
-      method: Method.DELETE
+      method: Method.DELETE,
     });
+  }
+
+  sync(data) {
+    return this._load({
+      url: `movies/sync`,
+      method: Method.POST,
+      body: JSON.stringify(data),
+      headers: new Headers({"Content-Type": `application/json`}),
+    })
+      .then(Api.toJSON);
   }
 
   _load({

@@ -1,12 +1,12 @@
 import {FilterType, UpdateType, UserAction} from "../const";
 import CommentsModel from "../model/comments";
+import {isOnline} from "../utils/common";
 import {remove, render, RenderPosition, replace} from "../utils/render";
+import {toast} from "../utils/toast/toast";
 import AddCommentView from "../view/add-comment";
 import CommentsView from "../view/comments";
 import FilmCard from "../view/film-card";
 import PopupView from "../view/popup";
-import {toast} from "../utils/toast/toast";
-import {isOnline} from "../utils/common";
 
 const Mode = {
   CLOSE: `CLOSE`,
@@ -14,7 +14,8 @@ const Mode = {
 };
 
 export default class Film {
-  constructor(filmsContainer, changeData, changeMode, api) {
+  constructor(filmsContainer, changeData, changeMode, filterModel, api) {
+    this._filterModel = filterModel;
     this._filmsContainer = filmsContainer;
     this._changeData = changeData;
     this._changeMode = changeMode;
@@ -57,12 +58,6 @@ export default class Film {
   }
 
   _handlerChangeData(key) {
-    if (!isOnline()) {
-      toast(`You can't update film offline`);
-
-      return;
-    }
-
     const userDetails = Object.assign(
         {},
         this._film.userDetails,
@@ -74,7 +69,7 @@ export default class Film {
 
     this._changeData(
         UserAction.UPDATE_FILM,
-        UpdateType.PATCH,
+        this._filterModel.getFilter() === FilterType.ALL ? UpdateType.PATCH : UpdateType.MINOR,
         Object.assign(
             {},
             this._film,
