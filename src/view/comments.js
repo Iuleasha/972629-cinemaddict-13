@@ -1,4 +1,4 @@
-import {formatDate} from '../utils/common';
+import {formatDateToTimeFromNow} from '../utils/common';
 import SmartView from "./smart";
 
 const DELETING_TEXT = `Deleting…`;
@@ -13,7 +13,7 @@ const createCommentTemplate = (comment) => {
         <p class="film-details__comment-text">${comment.comment}</p>
         <p class="film-details__comment-info">
           <span class="film-details__comment-author">${comment.author}</span>
-          <span class="film-details__comment-day">${formatDate(comment.date, `YYYY/MM/DD HH:mm`)}</span>
+          <span class="film-details__comment-day">${formatDateToTimeFromNow(comment.date)}</span>
           <button class="film-details__comment-delete">${DEFAULT_DELETE_TEXT}</button>
         </p>
       </div>

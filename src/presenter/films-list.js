@@ -54,8 +54,6 @@ export class FilmsList {
     this._displayedContentModule.addObserver(this._showStatusEvent);
 
     this._renderBoard();
-    this._renderMostRated();
-    this._renderMostCommented();
   }
 
   destroy() {

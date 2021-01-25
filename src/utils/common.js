@@ -1,30 +1,16 @@
 import dayjs from 'dayjs';
 import objectSupport from "dayjs/plugin/objectSupport";
+import relativeTime from 'dayjs/plugin/relativeTime';
 import {FILM_RUNTIME_FORMAT, StatisticsType} from "../const";
 
-export const formatDate = (date, format) => {
-  return dayjs(date).format(format);
-};
+dayjs.extend(relativeTime);
+dayjs.extend(objectSupport);
 
-export const updateItem = (items, update) => {
-  const index = items.findIndex((item) => item.id === update.id);
+export const formatDate = (date, format) => dayjs(date).format(format);
 
-  if (index === -1) {
-    return items;
-  }
+export const formatDateToTimeFromNow = (date) => dayjs(date).fromNow();
 
-  return [
-    ...items.slice(0, index),
-    update,
-    ...items.slice(index + 1),
-  ];
-};
-
-export const formatFilmRuntime = (runtime) => {
-  dayjs.extend(objectSupport);
-
-  return dayjs({minute: runtime}).format(FILM_RUNTIME_FORMAT);
-};
+export const formatFilmRuntime = (runtime) => dayjs({minute: runtime}).format(FILM_RUNTIME_FORMAT);
 
 export const sortGenres = (films) => {
   const genres = {};
@@ -75,6 +61,4 @@ export const filterWatchedFilmsByPeriod = (films, type) => {
   return type !== StatisticsType.ALL_TIME ? films.filter((film) => dayjs(film.userDetails.watchingDate).isSame(dayjs(), type)) : films;
 };
 
-export const isOnline = () => {
-  return window.navigator.onLine;
-};
+export const isOnline = () => window.navigator.onLine;
