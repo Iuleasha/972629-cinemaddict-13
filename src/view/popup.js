@@ -1,12 +1,8 @@
 import {formatDate, formatFilmRuntime} from '../utils/common';
 import SmartView from './smart';
 
-const createGenreItem = (array) => {
-  let genres = ``;
-  array.forEach((item) => {
-    genres += `<span class="film-details__genre">${item}</span>`;
-  });
-  return genres;
+const createGenreItem = (genres) => {
+  return genres.map((genre) => `<span class="film-details__genre">${genre}</span>`).join(``);
 };
 
 const createPopupTemplate = (film) => {

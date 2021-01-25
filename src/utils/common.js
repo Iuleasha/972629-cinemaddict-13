@@ -57,8 +57,6 @@ export const generateRank = (films) => {
   }
 };
 
-export const filterWatchedFilmsByPeriod = (films, type) => {
-  return type !== StatisticsType.ALL_TIME ? films.filter((film) => dayjs(film.userDetails.watchingDate).isSame(dayjs(), type)) : films;
-};
+export const filterWatchedFilmsByPeriod = (films, type) => type !== StatisticsType.ALL_TIME ? films.filter((film) => dayjs(film.userDetails.watchingDate).isSame(dayjs(), type)) : films;
 
 export const isOnline = () => window.navigator.onLine;

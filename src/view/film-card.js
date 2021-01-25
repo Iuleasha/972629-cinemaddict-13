@@ -1,9 +1,7 @@
 import {formatDate, formatFilmRuntime} from '../utils/common';
 import Abstract from './abstract';
 
-const addActiveClass = (status) => {
-  return status ? `film-card__controls-item--active` : ``;
-};
+const addActiveClass = (status) => status ? `film-card__controls-item--active` : ``;
 
 const createCardTemplate = (film) => {
   const {id, comments, filmInfo, userDetails} = film;

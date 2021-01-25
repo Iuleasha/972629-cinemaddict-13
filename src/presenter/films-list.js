@@ -250,13 +250,13 @@ export class FilmsList {
       remove(this._extrasExtrasByCommentsContainerComponent);
     }
 
-    const sortedByCommentsArray = this._filmsModel.getFilms().sort((a, b) => b.comments.length - a.comments.length);
+    const filmsSortedByComments = this._filmsModel.getFilms().sort((a, b) => b.comments.length - a.comments.length);
 
-    if (sortedByCommentsArray[0].comments.length && sortedByCommentsArray.length) {
+    if (filmsSortedByComments.length && filmsSortedByComments[0].comments.length) {
       this._extrasExtrasByCommentsContainerComponent = new FilmCardExtras(ExtraType.BY_COMMENTS);
       const extrasContainerComponent = new FilmsContainerComponent();
 
-      sortedByCommentsArray.slice(0, MAX_EXTRAS_LENGTH).forEach((film) => {
+      filmsSortedByComments.slice(0, MAX_EXTRAS_LENGTH).forEach((film) => {
         const filmPresenter = new FilmPresenter(extrasContainerComponent, this._handleFilmUpdate, this._handleModeChange, this._filterModel, this._api);
         filmPresenter.init(film);
         this._filmsExtrasByCommentsPresenters[film.id] = filmPresenter;
@@ -268,13 +268,13 @@ export class FilmsList {
   }
 
   _renderMostRated() {
-    const sortedByRatingArray = this._filmsModel.getFilms().sort((a, b) => Number(b.filmInfo.totalRating) - Number(a.filmInfo.totalRating));
+    const filmsSortedByRating = this._filmsModel.getFilms().sort((a, b) => Number(b.filmInfo.totalRating) - Number(a.filmInfo.totalRating));
 
-    if (sortedByRatingArray.length) {
+    if (filmsSortedByRating.length && filmsSortedByRating[0].filmInfo.totalRating !== `0`) {
       const extras = new FilmCardExtras(ExtraType.BY_RATING);
       const extrasContainerComponent = new FilmsContainerComponent();
 
-      sortedByRatingArray.slice(0, MAX_EXTRAS_LENGTH).forEach((film) => {
+      filmsSortedByRating.slice(0, MAX_EXTRAS_LENGTH).forEach((film) => {
         const filmPresenter = new FilmPresenter(extrasContainerComponent, this._handleFilmUpdate, this._handleModeChange, this._filterModel, this._api);
         filmPresenter.init(film);
         this._filmsExtrasByRatingPresenters[film.id] = filmPresenter;

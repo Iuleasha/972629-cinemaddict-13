@@ -27,9 +27,6 @@ const apiWithProvider = new Provider(api, store);
 const filmsModel = new FilmsModel();
 const filterModel = new FilterModel();
 const displayedContentModule = new DisplayedContentModule();
-
-render(footerElement, new FooterStatsView(), RenderPosition.BEFOREEND);
-
 const profilePresenter = new ProfilePresenter(headerElement, filmsModel);
 const filmListPresenter = new FilmsList(mainElement, filmsModel, filterModel, displayedContentModule, apiWithProvider);
 const filterPresenter = new FilterPresenter(mainElement, filterModel, filmsModel, displayedContentModule);
@@ -43,17 +40,18 @@ statisticPresenter.init();
 apiWithProvider.getFilms()
   .then((films) => {
     filmsModel.setFilms(UpdateType.INIT, films);
+    render(footerElement, new FooterStatsView(films.length), RenderPosition.BEFOREEND);
   });
 
-window.addEventListener(`load`, () => {
-  navigator.serviceWorker.register(`/sw.js`);
-});
-
-window.addEventListener(`online`, () => {
-  document.title = document.title.replace(` [offline]`, ``);
-  apiWithProvider.sync();
-});
-
-window.addEventListener(`offline`, () => {
-  document.title += ` [offline]`;
-});
+// window.addEventListener(`load`, () => {
+//   navigator.serviceWorker.register(`/sw.js`);
+// });
+//
+// window.addEventListener(`online`, () => {
+//   document.title = document.title.replace(` [offline]`, ``);
+//   apiWithProvider.sync();
+// });
+//
+// window.addEventListener(`offline`, () => {
+//   document.title += ` [offline]`;
+// });

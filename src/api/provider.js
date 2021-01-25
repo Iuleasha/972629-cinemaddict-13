@@ -1,10 +1,8 @@
 import FilmsModel from "../model/films";
 import {isOnline} from "../utils/common";
 
-const getSyncedFilms = (items) => {
-  return items.filter(({success}) => success)
-    .map(({payload}) => payload.film);
-};
+const getSyncedFilms = (items) => items.filter(({success}) => success)
+  .map(({payload}) => payload.film);
 
 const createStoreStructure = (items) => {
   return items.reduce((acc, current) => {

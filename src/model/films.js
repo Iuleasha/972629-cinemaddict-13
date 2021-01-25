@@ -21,6 +21,7 @@ export default class Films extends Observer {
 
       if (index >= 0) {
         const chart = item.charAt(index + 1);
+
         key = item.replace(`_${chart}`, chart.toLocaleUpperCase());
       }
 
