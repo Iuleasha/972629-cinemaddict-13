@@ -1,4 +1,4 @@
-import FilmsModel from './model/films';
+import FilmsModel from '../model/films';
 
 const AUTHORIZATION = `Basic dfsdfgsdf444vwg54j`;
 const END_POINT = `https://13.ecmascript.pages.academy/cinemaddict`;
@@ -70,8 +70,18 @@ export default class Api {
   deleteComment(commentId) {
     return this._load({
       url: `comments/${commentId}`,
-      method: Method.DELETE
+      method: Method.DELETE,
     });
+  }
+
+  sync(data) {
+    return this._load({
+      url: `movies/sync`,
+      method: Method.POST,
+      body: JSON.stringify(data),
+      headers: new Headers({"Content-Type": `application/json`}),
+    })
+      .then(Api.toJSON);
   }
 
   _load({

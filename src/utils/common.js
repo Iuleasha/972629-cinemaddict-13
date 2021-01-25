@@ -1,60 +1,16 @@
 import dayjs from 'dayjs';
 import objectSupport from "dayjs/plugin/objectSupport";
+import relativeTime from 'dayjs/plugin/relativeTime';
 import {FILM_RUNTIME_FORMAT, StatisticsType} from "../const";
 
-export const getRandomInteger = (a = 0, b = 1) => {
-  const lower = Math.ceil(Math.min(a, b));
-  const upper = Math.floor(Math.max(a, b));
+dayjs.extend(relativeTime);
+dayjs.extend(objectSupport);
 
-  return Math.floor(lower + Math.random() * (upper - lower + 1));
-};
+export const formatDate = (date, format) => dayjs(date).format(format);
 
-export const randomNumber = (a, b) => {
-  const lower = Math.min(a, b);
-  const upper = Math.max(a, b);
+export const formatDateToTimeFromNow = (date) => dayjs(date).fromNow();
 
-  return lower + Math.random() * (upper - lower);
-};
-
-export const createEmptyArray = (length) => {
-  return new Array(length ? length : 1).fill();
-};
-
-export const createRandomArray = (array) => {
-  const randomIndex = getRandomInteger(0, array.length - 1);
-
-  return createEmptyArray(randomIndex).map(() => array[getRandomInteger(0, array.length - 1)]);
-};
-
-export const getRandomArrayItem = (array) => {
-  const randomIndex = getRandomInteger(0, array.length - 1);
-
-  return array[randomIndex];
-};
-
-export const formatDate = (date, format) => {
-  return dayjs(date).format(format);
-};
-
-export const updateItem = (items, update) => {
-  const index = items.findIndex((item) => item.id === update.id);
-
-  if (index === -1) {
-    return items;
-  }
-
-  return [
-    ...items.slice(0, index),
-    update,
-    ...items.slice(index + 1),
-  ];
-};
-
-export const formatFilmRuntime = (runtime) => {
-  dayjs.extend(objectSupport);
-
-  return dayjs({minute: runtime}).format(FILM_RUNTIME_FORMAT);
-};
+export const formatFilmRuntime = (runtime) => dayjs({minute: runtime}).format(FILM_RUNTIME_FORMAT);
 
 export const sortGenres = (films) => {
   const genres = {};
@@ -104,3 +60,5 @@ export const generateRank = (films) => {
 export const filterWatchedFilmsByPeriod = (films, type) => {
   return type !== StatisticsType.ALL_TIME ? films.filter((film) => dayjs(film.userDetails.watchingDate).isSame(dayjs(), type)) : films;
 };
+
+export const isOnline = () => window.navigator.onLine;

@@ -26,6 +26,7 @@ export const ExtraType = {
 export const UpdateType = {
   PATCH: `PATCH`,
   MINOR: `MINOR`,
+  EXTRA: `EXTRA`,
   MAJOR: `MAJOR`,
   INIT: `INIT`
 };

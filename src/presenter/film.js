@@ -1,6 +1,8 @@
 import {FilterType, UpdateType, UserAction} from "../const";
 import CommentsModel from "../model/comments";
+import {isOnline} from "../utils/common";
 import {remove, render, RenderPosition, replace} from "../utils/render";
+import {toast} from "../utils/toast/toast";
 import AddCommentView from "../view/add-comment";
 import CommentsView from "../view/comments";
 import FilmCard from "../view/film-card";
@@ -12,7 +14,8 @@ const Mode = {
 };
 
 export default class Film {
-  constructor(filmsContainer, changeData, changeMode, api) {
+  constructor(filmsContainer, changeData, changeMode, filterModel, api) {
+    this._filterModel = filterModel;
     this._filmsContainer = filmsContainer;
     this._changeData = changeData;
     this._changeMode = changeMode;
@@ -66,7 +69,7 @@ export default class Film {
 
     this._changeData(
         UserAction.UPDATE_FILM,
-        UpdateType.PATCH,
+        this._filterModel.getFilter() === FilterType.ALL ? UpdateType.PATCH : UpdateType.MINOR,
         Object.assign(
             {},
             this._film,
@@ -76,7 +79,7 @@ export default class Film {
   _handleUpdateFilmCardComments(comments) {
     this._changeData(
         UserAction.UPDATE_FILM,
-        UpdateType.PATCH,
+        UpdateType.EXTRA,
         Object.assign(
             {},
             this._film,
@@ -119,14 +122,17 @@ export default class Film {
 
     render(commentsWrapper, this._newCommentComponent, RenderPosition.BEFOREEND);
 
-    this._api.getComments(this._film.id).then((comments) => {
-      this._commentsModel.setComments(comments);
-      this._filmCommentsComponent = new CommentsView(comments);
-      this._filmCommentsComponent.setDeleteCommentClickHandler(this._handleDeleteCommentClick);
+    if (!isOnline()) {
+      toast(`You can't get comments offline`);
+    } else {
+      this._api.getComments(this._film.id).then((comments) => {
+        this._commentsModel.setComments(comments);
+        this._filmCommentsComponent = new CommentsView(comments);
+        this._filmCommentsComponent.setDeleteCommentClickHandler(this._handleDeleteCommentClick);
 
-      render(commentsWrapper, this._filmCommentsComponent, RenderPosition.AFTERBEGIN);
-    });
-
+        render(commentsWrapper, this._filmCommentsComponent, RenderPosition.AFTERBEGIN);
+      });
+    }
   }
 
   _closePopup() {
@@ -164,19 +170,29 @@ export default class Film {
     }
   }
 
-  _handleDeleteCommentClick(event) {
-    if (event.target.tagName === `BUTTON`) {
-      const commentId = event.target.closest(`.film-details__comment`).dataset.id;
-      event.target.innerText = `Deleting…`;
-      this._api.deleteComment(commentId).then(() => {
-        this._commentsModel.deleteComment(UserAction.DELETE_COMMENT, commentId);
-      }).catch(() => {
-        event.target.innerText = `Delete`;
-      });
+  _handleDeleteCommentClick(commentId) {
+    if (!isOnline()) {
+      toast(`You can't delete comment offline`);
+
+      return;
     }
+
+    this._api.deleteComment(commentId).then(() => {
+      this._commentsModel.deleteComment(UserAction.DELETE_COMMENT, commentId);
+    }).catch(() => {
+      this._commentsModel.setDefaultDeleteButtonText(commentId);
+    });
   }
 
   _handleFormSubmit(comment) {
+    if (!isOnline()) {
+      toast(`You can't submit comment offline`);
+      this._newCommentComponent.addAnimation();
+      this._newCommentComponent.switchDisableFormStus(false);
+
+      return;
+    }
+
     this._api.addComment(comment, this._film.id).then(({comments}) => {
       this._commentsModel.addComment(UserAction.ADD_COMMENT, comments);
     });

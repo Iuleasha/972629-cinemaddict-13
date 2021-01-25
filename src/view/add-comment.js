@@ -100,11 +100,12 @@ export default class AddComment extends SmartView {
         emojiWrapper.classList.add(`form-error`);
       }
 
+      this.addAnimation();
+
       return;
     }
 
-    commentInput.disabled = true;
-    emojiWrapper.disabled = true;
+    this.switchDisableFormStus(true);
 
     this._callback.formSubmit(this._comment);
   }
@@ -112,5 +113,26 @@ export default class AddComment extends SmartView {
   setFormSubmitHandler(callback) {
     this._callback.formSubmit = callback;
     this.getElement().addEventListener(`keydown`, this._formSubmitHandler);
+  }
+
+  switchDisableFormStus(status) {
+    const commentInput = this.getElement().querySelector(`.film-details__comment-input`);
+    const emojiWrapper = this.getElement().querySelector(`.film-details__add-emoji-label`);
+
+    commentInput.disabled = status;
+    emojiWrapper.disabled = status;
+  }
+
+  addAnimation() {
+    const commentInput = this.getElement().querySelector(`.film-details__comment-input`);
+    const emojiWrapper = this.getElement().querySelector(`.film-details__add-emoji-label`);
+
+    commentInput.classList.add(`shake`);
+    emojiWrapper.classList.add(`shake`);
+
+    setTimeout(() => {
+      commentInput.classList.remove(`shake`);
+      emojiWrapper.classList.remove(`shake`);
+    }, 600);
   }
 }

@@ -1,5 +1,8 @@
+import {formatDateToTimeFromNow} from '../utils/common';
 import SmartView from "./smart";
-import {formatDate} from '../utils/common';
+
+const DELETING_TEXT = `Deleting…`;
+const DEFAULT_DELETE_TEXT = `Delete`;
 
 const createCommentTemplate = (comment) => {
   return `<li data-id="${comment.id}" class="film-details__comment">
@@ -10,8 +13,8 @@ const createCommentTemplate = (comment) => {
         <p class="film-details__comment-text">${comment.comment}</p>
         <p class="film-details__comment-info">
           <span class="film-details__comment-author">${comment.author}</span>
-          <span class="film-details__comment-day">${formatDate(comment.date, `YYYY/MM/DD HH:mm`)}</span>
-          <button class="film-details__comment-delete">Delete</button>
+          <span class="film-details__comment-day">${formatDateToTimeFromNow(comment.date)}</span>
+          <button class="film-details__comment-delete">${DEFAULT_DELETE_TEXT}</button>
         </p>
       </div>
     </li>`;
@@ -46,7 +49,13 @@ export default class Comments extends SmartView {
 
   _deleteCommentClickHandler(evt) {
     evt.preventDefault();
-    this._callback.deleteCommentClick(evt);
+
+    if (evt.target.tagName === `BUTTON`) {
+      const commentId = evt.target.closest(`.film-details__comment`).dataset.id;
+      evt.target.innerText = DELETING_TEXT;
+
+      this._callback.deleteCommentClick(commentId);
+    }
   }
 
   setDeleteCommentClickHandler(callback) {
@@ -56,5 +65,10 @@ export default class Comments extends SmartView {
 
   restoreHandlers() {
     this.setDeleteCommentClickHandler(this._callback.deleteCommentClick);
+  }
+
+  setDefaultDeleteButtonText(commentId) {
+    const commentItem = this.getElement().querySelector(`[data-id=${commentId}]`);
+    commentItem.innerText = DEFAULT_DELETE_TEXT;
   }
 }
