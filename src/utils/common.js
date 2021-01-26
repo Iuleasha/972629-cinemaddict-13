@@ -57,6 +57,8 @@ export const generateRank = (films) => {
   }
 };
 
+export const cutString = (str, maxLength) => str.substring(0, maxLength) + `...`;
+
 export const filterWatchedFilmsByPeriod = (films, type) => type !== StatisticsType.ALL_TIME ? films.filter((film) => dayjs(film.userDetails.watchingDate).isSame(dayjs(), type)) : films;
 
 export const isOnline = () => window.navigator.onLine;

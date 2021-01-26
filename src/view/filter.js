@@ -1,8 +1,9 @@
+import {FilterType} from '../const';
 import SmartView from './smart';
 
 const createFilterItemTemplate = (filter, currentFilterType) => {
   const {type, name, count} = filter;
-  const countWrapper = count ? `<span class="main-navigation__item-count">${count}</span>` : ``;
+  const countWrapper = type !== FilterType.ALL ? `<span class="main-navigation__item-count">${count}</span>` : ``;
   const activeClass = type === currentFilterType ? `main-navigation__item--active` : ``;
 
   return (`<a href="#${type}" class="main-navigation__item ${activeClass}" data-type="${type}">${name} ${countWrapper}</a>`);

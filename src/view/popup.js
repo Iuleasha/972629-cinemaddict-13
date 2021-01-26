@@ -1,8 +1,15 @@
-import {formatDate, formatFilmRuntime} from '../utils/common';
+import {cutString, formatDate, formatFilmRuntime} from '../utils/common';
 import SmartView from './smart';
+
+const MAX_DESCRIPTION_LENGTH = 140;
+const CUT_LENGTH = 139;
 
 const createGenreItem = (genres) => {
   return genres.map((genre) => `<span class="film-details__genre">${genre}</span>`).join(``);
+};
+
+const eclipseDescription = (description) => {
+  return description.length > MAX_DESCRIPTION_LENGTH ? cutString(description, CUT_LENGTH) : description;
 };
 
 const createPopupTemplate = (film) => {
@@ -59,13 +66,13 @@ const createPopupTemplate = (film) => {
               <td class="film-details__cell">${filmInfo.release.releaseCountry}</td>
             </tr>
             <tr class="film-details__row">
-              <td class="film-details__term">Genres</td>
+              <td class="film-details__term">${filmInfo.genre.length > 1 ? `Genres` : `Genre`}</td>
               <td class="film-details__cell">
                 ${createGenreItem(filmInfo.genre)}</td>
             </tr>
           </table>
 
-          <p class="film-details__film-description">${filmInfo.description}</p>
+          <p class="film-details__film-description">${eclipseDescription(filmInfo.description)}</p>
         </div>
       </div>
 
