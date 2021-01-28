@@ -2,6 +2,8 @@ import he from "he";
 import {emotions} from "../const";
 import SmartView from "./smart";
 
+const ANIMATION_DURATION = 600;
+
 const createEmojiItemTemplate = (emoji) => {
   return `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emoji}" value="${emoji}">
       <label class="film-details__emoji-label" for="emoji-${emoji}">
@@ -133,6 +135,6 @@ export default class AddComment extends SmartView {
     setTimeout(() => {
       commentInput.classList.remove(`shake`);
       emojiWrapper.classList.remove(`shake`);
-    }, 600);
+    }, ANIMATION_DURATION);
   }
 }

@@ -6,6 +6,12 @@ import {FILM_RUNTIME_FORMAT, StatisticsType} from "../const";
 dayjs.extend(relativeTime);
 dayjs.extend(objectSupport);
 
+const MIN_NOVICE_RANK = 1;
+const MAX_NOVICE_RANK = 10;
+const MIN_FAN_RANK = 11;
+const MAX_FAN_RANK = 20;
+const MIN_MOVIE_BUFF_RANK = 21;
+
 export const formatDate = (date, format) => dayjs(date).format(format);
 
 export const formatDateToTimeFromNow = (date) => dayjs(date).fromNow();
@@ -45,12 +51,12 @@ export const formatTotalDuration = (totalDuration) => {
 export const generateRank = (films) => {
   const rank = films.length;
 
-  if (rank >= 1 && rank <= 10) {
+  if (rank >= MIN_NOVICE_RANK && rank <= MAX_NOVICE_RANK) {
     return `novice`;
-  } else if (rank >= 11 && rank <= 20) {
+  } else if (rank >= MIN_FAN_RANK && rank <= MAX_FAN_RANK) {
     return `fan`;
   } else if
-  (rank >= 21) {
+  (rank >= MIN_MOVIE_BUFF_RANK) {
     return `movie buff`;
   } else {
     return ``;

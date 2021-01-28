@@ -4,9 +4,8 @@ import {statisticsItems} from "../const";
 import {formatTotalDuration, generateRank, sortGenres} from "../utils/common";
 import SmartView from './smart';
 
+const BAR_HEIGHT = 50;
 const renderChart = (statisticCtx, labels, data) => {
-  const BAR_HEIGHT = 50;
-
   statisticCtx.height = BAR_HEIGHT * labels.length;
 
   return new Chart(statisticCtx, {

@@ -21,19 +21,20 @@ export class FilmsList {
     this._displayedContentModule = displayedContentModule;
     this._filmsListContainer = filmsListContainer;
     this._renderedMovieCount = FILM_COUNT_PER_STEP;
+    this._currentSortType = SortType.DEFAULT;
+    this._currentMenyType = MenuItem.FILMS;
     this._filmsPresenters = {};
     this._filmsExtrasByCommentsPresenters = {};
     this._filmsExtrasByRatingPresenters = {};
-    this._currentSortType = SortType.DEFAULT;
-    this._currentMenyType = MenuItem.FILMS;
     this._filmsComponent = new FilmsComponent();
     this._filmsListComponent = new FilmsListComponent();
     this._filmsContainerComponent = new FilmsContainerComponent();
     this._loadingComponent = new LoadingView();
     this._noMovies = new NoMovies();
-    this._showMoreButtonComponent = null;
-    this._extrasExtrasByCommentsContainerComponent = null;
     this._sortComponent = new SortView(this._currentSortType);
+    this._showMoreButtonComponent = null;
+    this._extrasByCommentsComponent = null;
+    this._extrasByRatingComponent = null;
     this._isLoading = true;
     this._api = api;
 
@@ -89,12 +90,16 @@ export class FilmsList {
 
     if (MenuItem.FILMS !== menuType) {
       this._clearFilmsList({resetRenderedMovieCount: true, resetSortType: true});
+      this._clearExtras();
+
       remove(this._filmsComponent);
     } else {
       render(this._filmsListContainer, this._filmsComponent, RenderPosition.BEFOREEND);
       render(this._filmsComponent, this._filmsListComponent, RenderPosition.AFTERBEGIN);
 
       this._renderBoard();
+      this._renderMostCommented();
+      this._renderMostRated();
     }
   }
 
@@ -122,6 +127,7 @@ export class FilmsList {
         this._renderMostCommented();
         break;
       case UpdateType.MINOR:
+        this.updatePresenters(data);
         this._clearFilmsList();
         this._renderBoard();
         break;
@@ -246,43 +252,58 @@ export class FilmsList {
   }
 
   _renderMostCommented() {
-    if (this._extrasExtrasByCommentsContainerComponent !== null) {
-      remove(this._extrasExtrasByCommentsContainerComponent);
+    if (this._extrasByCommentsComponent !== null) {
+      remove(this._extrasByCommentsComponent);
     }
 
     const filmsSortedByComments = this._filmsModel.getFilms().sort((a, b) => b.comments.length - a.comments.length);
 
     if (filmsSortedByComments.length && filmsSortedByComments[0].comments.length) {
-      this._extrasExtrasByCommentsContainerComponent = new FilmCardExtras(ExtraType.BY_COMMENTS);
-      const extrasContainerComponent = new FilmsContainerComponent();
+      this._extrasByCommentsComponent = new FilmCardExtras(ExtraType.BY_COMMENTS);
 
-      filmsSortedByComments.slice(0, MAX_EXTRAS_LENGTH).forEach((film) => {
-        const filmPresenter = new FilmPresenter(extrasContainerComponent, this._handleFilmUpdate, this._handleModeChange, this._filterModel, this._api);
-        filmPresenter.init(film);
-        this._filmsExtrasByCommentsPresenters[film.id] = filmPresenter;
-      });
-
-      render(this._extrasExtrasByCommentsContainerComponent, extrasContainerComponent, RenderPosition.BEFOREEND);
-      render(this._filmsComponent, this._extrasExtrasByCommentsContainerComponent, RenderPosition.BEFOREEND);
+      this._renderExtra(this._extrasByCommentsComponent, filmsSortedByComments, this._filmsExtrasByCommentsPresenters);
     }
   }
 
   _renderMostRated() {
+    if (this._extrasByRatingComponent !== null) {
+      remove(this._extrasByRatingComponent);
+    }
+
     const filmsSortedByRating = this._filmsModel.getFilms().sort((a, b) => Number(b.filmInfo.totalRating) - Number(a.filmInfo.totalRating));
 
     if (filmsSortedByRating.length && filmsSortedByRating[0].filmInfo.totalRating !== `0`) {
-      const extras = new FilmCardExtras(ExtraType.BY_RATING);
-      const extrasContainerComponent = new FilmsContainerComponent();
+      this._extrasByRatingComponent = new FilmCardExtras(ExtraType.BY_RATING);
 
-      filmsSortedByRating.slice(0, MAX_EXTRAS_LENGTH).forEach((film) => {
-        const filmPresenter = new FilmPresenter(extrasContainerComponent, this._handleFilmUpdate, this._handleModeChange, this._filterModel, this._api);
-        filmPresenter.init(film);
-        this._filmsExtrasByRatingPresenters[film.id] = filmPresenter;
-      });
-
-      render(extras, extrasContainerComponent, RenderPosition.BEFOREEND);
-      render(this._filmsComponent, extras, RenderPosition.BEFOREEND);
+      this._renderExtra(this._extrasByRatingComponent, filmsSortedByRating, this._filmsExtrasByRatingPresenters);
     }
+  }
+
+  _renderExtra(extraComponent, extrasFilms, presenter) {
+    const extrasContainerComponent = new FilmsContainerComponent();
+
+    extrasFilms.slice(0, MAX_EXTRAS_LENGTH).forEach((film) => {
+      const filmPresenter = new FilmPresenter(extrasContainerComponent, this._handleFilmUpdate, this._handleModeChange, this._filterModel, this._api);
+      filmPresenter.init(film);
+      presenter[film.id] = filmPresenter;
+    });
+
+    render(extraComponent, extrasContainerComponent, RenderPosition.BEFOREEND);
+    render(this._filmsComponent, extraComponent, RenderPosition.BEFOREEND);
+  }
+
+  _clearExtras() {
+    Object
+      .values(this._filmsExtrasByRatingPresenters)
+      .forEach((presenter) => presenter.destroy());
+
+    this._filmsExtrasByRatingPresenters = {};
+
+    Object
+      .values(this._filmsExtrasByRatingPresenters)
+      .forEach((presenter) => presenter.destroy());
+
+    this._filmsExtrasByRatingPresenters = {};
   }
 
   _clearFilmsList({resetRenderedMovieCount = false, resetSortType = false} = {}) {
@@ -301,8 +322,10 @@ export class FilmsList {
       remove(this._showMoreButtonComponent);
     }
 
-    if (resetRenderedMovieCount) {
+    if (resetRenderedMovieCount || this._renderedMovieCount === FILM_COUNT_PER_STEP) {
       this._renderedMovieCount = FILM_COUNT_PER_STEP;
+    } else if (filmsCount % this._renderedMovieCount === 1) {
+      this._renderedMovieCount = filmsCount;
     } else {
       this._renderedMovieCount = Math.min(filmsCount, this._renderedMovieCount);
     }
